@@ -24,9 +24,7 @@ CREATE TABLE Quizzes (
   time INT NOT NULL,
   Employers_id INT NOT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT fk_Quizzes_Employers1
-    FOREIGN KEY (Employers_id)
-    REFERENCES codewise.Employers (id)
+  FOREIGN KEY (Employers_id) REFERENCES Employers (id)
     ON DELETE CASCADE
 )
 
