@@ -8,6 +8,7 @@ import Results from './components/Results';
 import './App.css';
 import Navbar from './components/Navbar';
 
+
 function App() {
   return (
     <Router>
@@ -27,8 +28,8 @@ function AppContent() {
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/surveys" element={<Surveys />} />
-        <Route path="/results" element={<Results />} />
+        {/* <Route path="/surveys" element={<Surveys />} /> */}
+        {/* <Route path="/results" element={<Results />} /> */}
       </Routes>
     </>
   );

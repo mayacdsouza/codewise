@@ -4,20 +4,15 @@ import '../styles/Settings.css';
 
 const Settings = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleNameChange = (e) => {
-    setName(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
   };
 
   const handleProfileEdit = () => {
-    // Implement logic to update profile with the new name and email
-    console.log('Profile updated:', { name, email });
+    // Implement logic to update the profile with the new password
+    console.log('Password updated:', { password });
     // Optionally, redirect to a success page
     navigate('/settings/edit/success');
   };
@@ -34,29 +29,18 @@ const Settings = () => {
       <h1>Settings</h1>
       <div className="profile-edit">
         <h2>Edit Profile</h2>
-        {/* <form className="form-container"> */}
-          <div className="form-group">
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={handleNameChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={handleEmailChange}
-            />
-          </div>
-          <button className="btn" onClick={handleProfileEdit}>
-            Save Changes
-          </button>
-        {/* </form> */}
+        <div className="form-group">
+          <label htmlFor="password">New Password</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+        </div>
+        <button className="btn" onClick={handleProfileEdit}>
+          Save Changes
+        </button>
       </div>
       <div className="delete-account">
         <h2>Delete Account</h2>
