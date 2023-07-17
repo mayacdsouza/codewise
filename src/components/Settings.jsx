@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/Settings.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/Settings.css";
 
 const Settings = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -17,16 +17,16 @@ const Settings = () => {
 
   const handleProfileEdit = () => {
     // Implement logic to update profile with the new name and email
-    console.log('Profile updated:', { name, email });
+    console.log("Profile updated:", { name, email });
     // Optionally, redirect to a success page
-    navigate('/settings/edit/success');
+    navigate("/settings/edit/success");
   };
 
   const handleDeleteAccount = () => {
     // Implement logic to delete the user account
-    console.log('Account deleted');
+    console.log("Account deleted");
     // Optionally, redirect to a login page or home page
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -35,27 +35,27 @@ const Settings = () => {
       <div className="profile-edit">
         <h2>Edit Profile</h2>
         {/* <form className="form-container"> */}
-          <div className="form-group">
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={handleNameChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={handleEmailChange}
-            />
-          </div>
-          <button className="btn" onClick={handleProfileEdit}>
-            Save Changes
-          </button>
+        <div className="form-group">
+          <label htmlFor="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={handleNameChange}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={handleEmailChange}
+          />
+        </div>
+        <button className="btn" onClick={handleProfileEdit}>
+          Save Changes
+        </button>
         {/* </form> */}
       </div>
       <div className="delete-account">
