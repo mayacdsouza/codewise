@@ -1,3 +1,8 @@
+/*
+This is a utility function for validating login form input.
+It takes an object 'values' containing the login form field values and returns an object containing error messages, if any.
+*/
+
 function LoginValidation(values){
     let error = {}
     const email_pattern = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
