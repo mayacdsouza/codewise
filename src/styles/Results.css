@@ -1,0 +1,48 @@
+.results-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    padding: 20px;
+    text-align: left;
+    margin-top: 20px;
+  }
+  
+  .results-container h1 {
+    margin-bottom: 50px;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .results-description {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .results-container h2 {
+    font-size: 18px;
+    margin-bottom: 30px;
+    font-weight: bold;
+    text-align: left;
+  }
+  
+  .results-button {
+    border-radius: 20px;
+    border: 1px solid #ff4b2b;
+    background-color: #ff4b2b;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+  }
+  
+  .results-button:active {
+    transform: scale(0.95);
+  }
+  
+  .results-button:focus {
+    outline: none;
+  }
+  

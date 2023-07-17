@@ -1,7 +1,16 @@
+/*
+This file represents the Dashboard component, which is responsible for rendering the user dashboard.
+It includes options to manage surveys, view results, and customize profile settings.
+*/
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 
+/*
+The Dashboard component is a functional component that renders the user dashboard.
+It provides navigation options to manage surveys, view results, and access settings.
+*/
 const Dashboard = () => {
   const navigate = useNavigate();
   const settings = () => {
@@ -14,9 +23,13 @@ const Dashboard = () => {
     navigate('/results');
   };
 
+  /**
+  Render the Dashboard component.
+  It includes sections for managing surveys, viewing results, and accessing settings.
+  */
   return (
     <div className="profile-container">
-      <h1>Welcome to Your Dashboard</h1>
+      <h1>Welcome to Your Dashboard!</h1>
       <div className="dashboard">
         <div className="dashboard-item">
           <h3>Surveys</h3>
