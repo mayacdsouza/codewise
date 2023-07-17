@@ -168,8 +168,6 @@ function Login() {
             <button id="signupbutton" type="submit">Sign Up</button>
           </form>
         </div>
-        {/* SignUp*/}
-        {/* Login */}
         <div className="form-container sign-in-container">
           {backendError ? backendError.map(e => (<p key={e.msg} className='text-danger'>{e.msg}</p>)) : <span></span>}
           <form onSubmit={handleSubmit}>
@@ -186,7 +184,6 @@ function Login() {
             <button id="loginbutton" type="submit">Login</button>
           </form>
         </div>
-        {/* Login */}
         <div className="overlay-container">
           <div className="overlay">
             <div className="overlay-panel overlay-left">
