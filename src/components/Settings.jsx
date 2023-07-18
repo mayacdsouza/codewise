@@ -4,9 +4,9 @@ It imports necessary dependencies from the React and 'react-router-dom' librarie
 the required CSS file for styling.
 */
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/Settings.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/Settings.css";
 
 /*
 The Settings component is a functional component that renders the user settings page.
@@ -14,11 +14,11 @@ It allows users to edit their profile and delete their account.
 */
 const Settings = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [deleteEmail, setDeleteEmail] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [deleteEmail, setDeleteEmail] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [password, setPassword] = useState("");
 
   /*
   Event handler for email input changes in the edit profile form.
@@ -67,17 +67,17 @@ const Settings = () => {
   const handleProfileEdit = () => {
     // Perform input validation for empty fields
     if (!email || !oldPassword || !newPassword) {
-      alert('Please fill in all required fields.');
+      alert("Please fill in all required fields.");
       return;
     }
     // Send a POST request to update the password
-    fetch('http://localhost:3306/settings', {
-      method: 'POST',
+    fetch("http://localhost:3306/settings", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        formType: 'update',
+        formType: "update",
         email: email,
         oldPassword: oldPassword,
         newPassword: newPassword,
@@ -85,17 +85,17 @@ const Settings = () => {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to update password');
+          throw new Error("Failed to update password");
         }
         return response.json();
       })
       .then((data) => {
-        console.log('Password updated:', data.password);
+        console.log("Password updated:", data.password);
         alert("Changed password successfully.");
       })
       .catch((error) => {
         console.log(error);
-        alert('Incorrect credentials or failed to update password.');
+        alert("Incorrect credentials or failed to update password.");
       });
   };
 
@@ -106,35 +106,35 @@ const Settings = () => {
   const handleDeleteAccount = () => {
     // Perform input validation for empty fields
     if (!deleteEmail || !password) {
-      alert('Please fill in all required fields.');
+      alert("Please fill in all required fields.");
       return;
     }
     // Send a POST request to delete the account
-    fetch('http://localhost:3306/settings', {
-      method: 'POST',
+    fetch("http://localhost:3306/settings", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        formType: 'delete',
+        formType: "delete",
         deleteEmail: deleteEmail,
         password: password,
       }),
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to update password');
+          throw new Error("Failed to update password");
         }
         return response.json();
       })
       .then((data) => {
-        console.log('Account deleted:', data.id);
+        console.log("Account deleted:", data.id);
         alert("Account deleted successfully.");
-        navigate('/');
+        navigate("/");
       })
       .catch((error) => {
         console.log(error);
-        alert('Incorrect credentials or failed to delete account.');
+        alert("Incorrect credentials or failed to delete account.");
       });
   };
 
