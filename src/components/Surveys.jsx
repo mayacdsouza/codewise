@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Surveys.css";
+import { Link } from "react-router-dom";
 
 const Surveys = () => {
+  // Todo: Existing surveys should dynamically display created surveys instead of being hardcoded.
+  // Todo: Send to candidate should auto-generate a key link for that survey and email to the candidate. Should also create a results entry connected to that.
   return (
     <div className="settings-container">
       <h1>Surveys</h1>
-      <button className="btn">Create a new survey</button>
+      <nav className="navbar">
+        {" "}
+        <Link to="/newsurveys" className="nav-link">
+          Create a new survey
+        </Link>
+      </nav>
       <br></br>
       <br></br>
       <br></br>
