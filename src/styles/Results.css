@@ -45,4 +45,79 @@
   .results-button:focus {
     outline: none;
   }
+
+  .results-edit {
+    margin-bottom: 40px;
+    margin-left: 20px; /* Add left margin for indentation */
+  }
   
+  .results-edit h2 {
+    font-size: 18px;
+    margin-bottom: 30px;
+    font-weight: bold;
+    text-align: left; /* Add text-align: left */
+  }
+  
+  .results-edit form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 20px; /* Add left margin for indentation */
+  }
+  
+  .results-edit .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .results-edit label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    text-align: left; /* Add text-align: left */
+  }
+  
+  .results-edit input[type="text"],
+  .results-edit input[type="email"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+  }
+  
+  .styled-table th,
+  .styled-table td {
+    padding: 12px 15px;
+  }
+  
+  .styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+  
+  .styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
+  
+  .styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+  }
+  
+  table,
+  th,
+  td {
+    border: 1px solid;
+  }

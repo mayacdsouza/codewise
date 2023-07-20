@@ -29,15 +29,13 @@ const Results = () => {
       <p>View comprehensive reports and analysis of quiz results.</p>
 
       <h2>Individual Results</h2>
-      <table>
-        <thead>
+      <div className="results-edit">
+        <table className="styled-table">
           <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Score</th>
           </tr>
-        </thead>
-        <tbody>
           {results.map((result) => (
             <tr key={result.id}>
               <td>{result.id}</td>
@@ -45,8 +43,8 @@ const Results = () => {
               <td>{result.score}</td>
             </tr>
           ))}
-        </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 };
