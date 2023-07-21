@@ -141,12 +141,17 @@ app.post("/settings", (req, res) => {
   }
 });
 
-app.get("/hello_world", (req, res) => {
-  res.send({});
+//get for displaying surveys on surveys page
+app.get("/select_quizzes", function (req, res) {
+  let query1 = `SELECT id, Employers_id, title FROM Quizzes`;
+  db.query(query1, [], (err, result) => {
+    res.send(result);
+  });
 });
 
-app.get("/item_types", function (req, res) {
-  let query1 = "SELECT * FROM Employers;"; // Define our queries
+//get for displaying candidates on surveys page dropdown
+app.get("/select_candidates", function (req, res) {
+  let query1 = `SELECT id, name FROM Candidates`;
   db.query(query1, [], (err, result) => {
     res.send(result);
   });
