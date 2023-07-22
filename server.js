@@ -174,7 +174,9 @@ app.post("/add_result", (req, res) => {
   db.query(sql, values, (err, result, fields) => {
     if (err) {
       console.error("Error adding new result entry:", err);
-      return res.status(500).json({ error: "An error occurred while adding the result entry." });
+      return res
+        .status(500)
+        .json({ error: "An error occurred while adding the result entry." });
     }
 
     if (result) {
@@ -199,6 +201,14 @@ app.get("/select_quizzes_results", function (req, res) {
 // Get for displaying candidates in drop-down menu on results page
 app.get("/select_candidates_results", function (req, res) {
   let query1 = `SELECT id, name FROM Candidates`;
+  db.query(query1, [], (err, result) => {
+    res.send(result);
+  });
+});
+
+// Get for keylinks for custom quiz routes
+app.get("/select_links", function (req, res) {
+  let query1 = `SELECT link FROM Results`;
   db.query(query1, [], (err, result) => {
     res.send(result);
   });

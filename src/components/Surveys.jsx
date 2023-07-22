@@ -149,7 +149,7 @@ const Surveys = () => {
       );
     };
     fetchQuizzes();
-  }, [quizzes, options]);
+  }, [options]);
 
   return (
     <div className="settings-container">

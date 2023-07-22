@@ -4,6 +4,7 @@ It sets up the routing configuration using React Router and renders different co
 */
 
 import React from "react";
+import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -40,10 +41,15 @@ function AppContent() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/";
   // TODO: change to select all the link parameters from results
-  const quizzes = ["/1", "/2", "/3"];
-  const quizRoutes = quizzes.map((quiz, key) => {
-    return <Route path={quiz} element={<Quiz value={key} />} key={key} />;
-  });
+  const [quizzes, setQuizzes] = useState([]);
+  useEffect(() => {
+    async function fetchQuizzes() {
+      const response = await fetch("http://localhost:3306/select_links");
+      const data = await response.json();
+      setQuizzes(data?.map((row) => row.link));
+    }
+    fetchQuizzes();
+  }, []);
 
   return (
     <>
@@ -55,8 +61,9 @@ function AppContent() {
         <Route path="/surveys" element={<Surveys />} />
         <Route path="/newsurveys" element={<NewSurveys />} />
         <Route path="/results" element={<Results />} />
-        <Route path="/quiz" element={<Quiz />} />
-        {quizRoutes}
+        {quizzes.map((quiz, key) => (
+          <Route path={"/" + quiz} element={<Quiz value={key} />} key={key} />
+        ))}
       </Routes>
     </>
   );
