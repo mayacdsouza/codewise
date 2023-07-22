@@ -6,11 +6,6 @@ const Surveys = () => {
   // Todo: Change candidateName and email to be unique for each input element
   // Todo: Send to candidate should auto-generate a key link for that survey and email to the candidate. Should also create a results entry connected to that.
 
-  const handleCandidateInput = (e) => {
-    e.preventdefault();
-    console.log("Submitted");
-  };
-
   // const [candidateName, setCandidateName] = useState();
   // const [candidateEmail, setCandidateEmail] = useState();
 
@@ -36,19 +31,36 @@ const Surveys = () => {
   const [tableEntries, setTableEntries] = useState();
   const [options, setOptions] = useState();
   const [candidates, setCandidates] = useState();
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+
+  const handleCandidateInput = (e) => {
+    setName(e.target.name);
+    setEmail(e.target.email);
+  };
+
+  const params = {
+    name: name,
+    email: email,
+  };
+
+  fetch("http://localhost:3306/add_candidate", {
+    Method: "POST",
+    Headers: {
+      Accept: "application.json",
+      "Content-Type": "application/json",
+    },
+    Body: JSON.stringify(params),
+    Cache: "default",
+  });
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    async function fetchQuizzes() {
-      const response = await fetch("http://localhost:3306/select_quizzes", {
-        signal,
-      });
+    const fetchQuizzes = async () => {
+      const response = await fetch("http://localhost:3306/select_quizzes");
       const data = await response.json();
       setQuizzes(data);
       setTableEntries(
-        quizzes?.map(function (element) {
+        data?.map(function (element) {
           return (
             <tr key={element.id} employee-id={element.Employers_id}>
               <td>{element.title}</td>
@@ -64,22 +76,17 @@ const Surveys = () => {
           );
         })
       );
-    }
+    };
     fetchQuizzes();
-  }, [quizzes]);
+  }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
     async function fetchCandidates() {
-      const response = await fetch("http://localhost:3306/select_candidates", {
-        signal,
-      });
+      const response = await fetch("http://localhost:3306/select_candidates");
       const data = await response.json();
       setCandidates(data);
       setOptions(
-        candidates?.map(function (element) {
+        data?.map(function (element) {
           return (
             <option key={element.id} value={element.name}>
               {element.name}
@@ -87,12 +94,9 @@ const Surveys = () => {
           );
         })
       );
-      return () => {
-        controller.abort();
-      };
     }
     fetchCandidates();
-  }, [candidates]);
+  }, []);
   return (
     <div className="settings-container">
       <h1>Surveys</h1>
