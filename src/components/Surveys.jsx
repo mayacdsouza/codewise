@@ -5,28 +5,6 @@ import { Link } from "react-router-dom";
 const Surveys = () => {
   // Todo: Change candidateName and email to be unique for each input element
   // Todo: Send to candidate should auto-generate a key link for that survey and email to the candidate. Should also create a results entry connected to that.
-
-  // const [candidateName, setCandidateName] = useState();
-  // const [candidateEmail, setCandidateEmail] = useState();
-
-  // const handleSendToCandidate = () => {
-  //   // Generate a random key link
-  //   // Todo: Key link does not link to anything at the moment
-  //   const keyLink = Math.random().toString(36).substring(7);
-
-  //   // Prepare the email subject and body
-  //   const subject = "Your Survey Link";
-  //   const body = `Dear ${candidateName},\n\nPlease click the following link to access your survey: ${keyLink}\n\nBest regards,\nCodewise`;
-
-  //   // Generate the mailto link
-  //   const mailtoLink = `mailto:${candidateEmail}?subject=${encodeURIComponent(
-  //     subject
-  //   )}&body=${encodeURIComponent(body)}`;
-
-  //   // Open the default email client with the pre-filled email fields
-  //   window.location.href = mailtoLink;
-  // };
-
   const [quizzes, setQuizzes] = useState();
   const [tableEntries, setTableEntries] = useState();
   const [options, setOptions] = useState();
@@ -39,46 +17,85 @@ const Surveys = () => {
     setEmail(e.target.email);
   };
 
-  const params = {
-    name: name,
-    email: email,
-  };
+  // const params = {
+  //   name: name,
+  //   email: email,
+  // };
 
-  fetch("http://localhost:3306/add_candidate", {
-    Method: "POST",
-    Headers: {
-      Accept: "application.json",
-      "Content-Type": "application/json",
-    },
-    Body: JSON.stringify(params),
-    Cache: "default",
-  });
+  // fetch("http://localhost:3306/add_candidate", {
+  //   Method: "POST",
+  //   Headers: {
+  //     Accept: "application.json",
+  //     "Content-Type": "application/json",
+  //   },
+  //   Body: JSON.stringify(params),
+  //   Cache: "default",
+  // });
 
-  useEffect(() => {
-    const fetchQuizzes = async () => {
-      const response = await fetch("http://localhost:3306/select_quizzes");
-      const data = await response.json();
-      setQuizzes(data);
-      setTableEntries(
-        data?.map(function (element) {
-          return (
-            <tr key={element.id} employee-id={element.Employers_id}>
-              <td>{element.title}</td>
-              <td>
-                <select name="candidates" id="candidates">
-                  {options}
-                </select>
-              </td>
-              <td>
-                <button className="btn">Send to candidate</button>
-              </td>
-            </tr>
-          );
-        })
+  const handleSendToCandidate = async (selectedSurvey, selectedCandidates) => {
+    try {
+      // Check if quizzes and candidates are loaded
+      if (!quizzes || !candidates) {
+        console.error("Quizzes and/or candidates data not loaded.");
+        return;
+      }
+      // Find the selected quiz in the quizzes array based on the selectedSurvey ID
+      const selectedQuiz = quizzes.find((quiz) => quiz.id === selectedSurvey);
+
+      // Find the selected candidate in the candidate array based on the selectedCandidates ID
+      const selectedCandidate = candidates.find(
+        (candidate) => candidate.name === selectedCandidates
       );
-    };
-    fetchQuizzes();
-  }, []);
+      // Check if selectedCandidate is valid
+      if (!selectedCandidate) {
+        console.error("Selected candidate not found.");
+        return;
+      }
+
+      // Todo: Generate a random key link that links to specified quiz page
+      const keyLink = Math.random().toString(36).substring(7);
+
+      // Prepare the email subject and body
+      const subject = "Your Survey Link";
+      const body = `Dear ${selectedCandidate.name},\n\nPlease click the following link to access your survey: ${keyLink}\n\nBest regards,\nCodewise`;
+
+      console.log("Candidate name: " + selectedCandidate.name);
+      console.log("Candidate email: " + selectedCandidate.email);
+
+      // Generate the mailto link
+      const mailtoLink = `mailto:${
+        selectedCandidate.email
+      }?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+        body
+      )}`;
+
+      // Send a POST request to delete the account
+      const response = await fetch("http://localhost:3306/add_result", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          quiz_id: selectedQuiz.id,
+          employer_id: selectedQuiz.Employers_id,
+          candidate_id: selectedCandidate.id,
+          link: keyLink,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to new result entry.");
+      }
+      const data = await response.json();
+      console.log("New Result Entry:", data);
+      alert("Result entry added successfully.");
+      // Open the default email client with the pre-filled email fields
+      window.location.href = mailtoLink;
+    } catch (error) {
+      console.error("Error adding new result entry:", error);
+      alert("Error adding new result entry.");
+    }
+  };
 
   useEffect(() => {
     async function fetchCandidates() {
@@ -97,6 +114,43 @@ const Surveys = () => {
     }
     fetchCandidates();
   }, []);
+
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      const response = await fetch("http://localhost:3306/select_quizzes");
+      const data = await response.json();
+      setQuizzes(data);
+      setTableEntries(
+        data?.map(function (element) {
+          return (
+            <tr key={element.id} employee-id={element.Employers_id}>
+              <td>{element.title}</td>
+              <td>
+                <select name="candidates" id="candidates">
+                  {options}
+                </select>
+              </td>
+              <td>
+                <button
+                  className="btn"
+                  onClick={() =>
+                    handleSendToCandidate(
+                      element.id,
+                      document.getElementById("candidates").value
+                    )
+                  }
+                >
+                  Send to candidate
+                </button>
+              </td>
+            </tr>
+          );
+        })
+      );
+    };
+    fetchQuizzes();
+  }, [quizzes, options]);
+
   return (
     <div className="settings-container">
       <h1>Surveys</h1>

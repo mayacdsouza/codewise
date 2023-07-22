@@ -151,7 +151,7 @@ app.get("/select_quizzes", function (req, res) {
 
 //get for displaying candidates on surveys page dropdown
 app.get("/select_candidates", function (req, res) {
-  let query1 = `SELECT id, name FROM Candidates`;
+  let query1 = `SELECT id, name, email FROM Candidates`;
   db.query(query1, [], (err, result) => {
     res.send(result);
   });
@@ -160,6 +160,64 @@ app.get("/select_candidates", function (req, res) {
 // Adding a candidate on surveys page
 app.post("/add_candidate", (req, res) => {
   if (req.body) res.send("test");
+});
+
+// Add new results entry to 'send to candidate' button on surveys page
+app.post("/add_result", (req, res) => {
+  const { quiz_id, employer_id, candidate_id, link } = req.body;
+  const sql = `
+    INSERT INTO Results (Quizzes_id, Employers_id, Candidates_id, link)
+    VALUES (?, ?, ?, ?)
+  `;
+  const values = [quiz_id, employer_id, candidate_id, link];
+
+  db.query(sql, values, (err, result, fields) => {
+    if (err) {
+      console.error("Error adding new result entry:", err);
+      return res.status(500).json({ error: "An error occurred while adding the result entry." });
+    }
+
+    if (result) {
+      res.status(200).json({
+        quiz_id: req.body.quiz_id,
+        employer_id: req.body.employer_id,
+        candidate_id: req.body.candidate_id,
+        link: req.body.link,
+      });
+    }
+  });
+});
+
+// Get for displaying surveys in drop-down menu on results page
+app.get("/select_quizzes_results", function (req, res) {
+  let query1 = `SELECT id, title FROM Quizzes`;
+  db.query(query1, [], (err, result) => {
+    res.send(result);
+  });
+});
+
+// Get for displaying candidates in drop-down menu on results page
+app.get("/select_candidates_results", function (req, res) {
+  let query1 = `SELECT id, name FROM Candidates`;
+  db.query(query1, [], (err, result) => {
+    res.send(result);
+  });
+});
+
+// Get for displaying results per quiz on results page
+app.get("/results/:quizId", (req, res) => {
+  const quizId = req.params.quizId;
+  db.query(
+    "SELECT name, grade FROM Results INNER JOIN Candidates ON Candidates.id = Results.Candidates_id WHERE Quizzes_id = ? ORDER BY grade DESC",
+    [quizId],
+    (err, results) => {
+      if (err) {
+        console.error("Error executing the query:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+      res.json(results);
+    }
+  );
 });
 
 app.listen(dbPort, () => {
