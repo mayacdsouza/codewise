@@ -159,17 +159,7 @@ app.get("/select_candidates", function (req, res) {
 
 // Adding a candidate on surveys page
 app.post("/add_candidate", (req, res) => {
-  if (req.name && req.email) {
-    const sql = `INSERT INTO Candidates(name, email) VALUES ('${req.body.name}', '${req.body.signup_email}')`;
-    db.query(sql, (err, result, fields) => {
-      if (err) res.send(err);
-      if (result)
-        res.send({
-          name: req.body.name,
-          email: req.body.email,
-        });
-    });
-  }
+  if (req.body) res.send("test");
 });
 
 // Add new results entry to 'send to candidate' button on surveys page

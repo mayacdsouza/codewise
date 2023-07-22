@@ -9,11 +9,28 @@ const Surveys = () => {
   const [tableEntries, setTableEntries] = useState();
   const [options, setOptions] = useState();
   const [candidates, setCandidates] = useState();
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
 
   const handleCandidateInput = (e) => {
-    e.preventdefault();
-    console.log("Submitted");
+    setName(e.target.name);
+    setEmail(e.target.email);
   };
+
+  // const params = {
+  //   name: name,
+  //   email: email,
+  // };
+
+  // fetch("http://localhost:3306/add_candidate", {
+  //   Method: "POST",
+  //   Headers: {
+  //     Accept: "application.json",
+  //     "Content-Type": "application/json",
+  //   },
+  //   Body: JSON.stringify(params),
+  //   Cache: "default",
+  // });
 
   const handleSendToCandidate = async (selectedSurvey, selectedCandidates) => {
     try {
@@ -26,7 +43,9 @@ const Surveys = () => {
       const selectedQuiz = quizzes.find((quiz) => quiz.id === selectedSurvey);
 
       // Find the selected candidate in the candidate array based on the selectedCandidates ID
-      const selectedCandidate = candidates.find((candidate) => candidate.name === selectedCandidates);
+      const selectedCandidate = candidates.find(
+        (candidate) => candidate.name === selectedCandidates
+      );
       // Check if selectedCandidate is valid
       if (!selectedCandidate) {
         console.error("Selected candidate not found.");
@@ -39,14 +58,16 @@ const Surveys = () => {
       // Prepare the email subject and body
       const subject = "Your Survey Link";
       const body = `Dear ${selectedCandidate.name},\n\nPlease click the following link to access your survey: ${keyLink}\n\nBest regards,\nCodewise`;
-      
-      console.log("Candidate name: " + selectedCandidate.name)
-      console.log("Candidate email: " + selectedCandidate.email)
-      
+
+      console.log("Candidate name: " + selectedCandidate.name);
+      console.log("Candidate email: " + selectedCandidate.email);
+
       // Generate the mailto link
-      const mailtoLink = `mailto:${selectedCandidate.email}?subject=${encodeURIComponent(
-        subject
-      )}&body=${encodeURIComponent(body)}`;
+      const mailtoLink = `mailto:${
+        selectedCandidate.email
+      }?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+        body
+      )}`;
 
       // Send a POST request to delete the account
       const response = await fetch("http://localhost:3306/add_result", {
@@ -60,7 +81,7 @@ const Surveys = () => {
           candidate_id: selectedCandidate.id,
           link: keyLink,
         }),
-      })
+      });
 
       if (!response.ok) {
         throw new Error("Failed to new result entry.");
@@ -76,15 +97,9 @@ const Surveys = () => {
     }
   };
 
-
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
     async function fetchCandidates() {
-      const response = await fetch("http://localhost:3306/select_candidates", {
-        signal,
-      });
+      const response = await fetch("http://localhost:3306/select_candidates");
       const data = await response.json();
       setCandidates(data);
       setOptions(
@@ -96,25 +111,17 @@ const Surveys = () => {
           );
         })
       );
-      return () => {
-        controller.abort();
-      };
     }
     fetchCandidates();
   }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    async function fetchQuizzes() {
-      const response = await fetch("http://localhost:3306/select_quizzes", {
-        signal,
-      });
+    const fetchQuizzes = async () => {
+      const response = await fetch("http://localhost:3306/select_quizzes");
       const data = await response.json();
       setQuizzes(data);
       setTableEntries(
-        quizzes?.map(function (element) {
+        data?.map(function (element) {
           return (
             <tr key={element.id} employee-id={element.Employers_id}>
               <td>{element.title}</td>
@@ -124,13 +131,23 @@ const Surveys = () => {
                 </select>
               </td>
               <td>
-                <button className="btn" onClick={() => handleSendToCandidate(element.id, document.getElementById("candidates").value)}>Send to candidate</button>
+                <button
+                  className="btn"
+                  onClick={() =>
+                    handleSendToCandidate(
+                      element.id,
+                      document.getElementById("candidates").value
+                    )
+                  }
+                >
+                  Send to candidate
+                </button>
               </td>
             </tr>
           );
         })
       );
-    }
+    };
     fetchQuizzes();
   }, [quizzes, options]);
 
