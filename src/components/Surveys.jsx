@@ -52,12 +52,12 @@ const Surveys = () => {
         return;
       }
 
-      // Todo: Generate a random key link that links to specified quiz page
+      // Todo: Link to specified quiz page ON WEBSITE HOST
       const keyLink = Math.random().toString(36).substring(7);
 
       // Prepare the email subject and body
       const subject = "Your Survey Link";
-      const body = `Dear ${selectedCandidate.name},\n\nPlease click the following link to access your survey: ${keyLink}\n\nBest regards,\nCodewise`;
+      const body = `Dear ${selectedCandidate.name},\n\nPlease click the following link to access your survey: http://localhost:3000/${keyLink}\n\nBest regards,\nCodewise`;
 
       console.log("Candidate name: " + selectedCandidate.name);
       console.log("Candidate email: " + selectedCandidate.email);
@@ -69,13 +69,14 @@ const Surveys = () => {
         body
       )}`;
 
-      // Send a POST request to delete the account
+      // Send a POST request to add new result entry
       const response = await fetch("http://localhost:3306/add_result", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          grade: 0,
           quiz_id: selectedQuiz.id,
           employer_id: selectedQuiz.Employers_id,
           candidate_id: selectedCandidate.id,
@@ -84,10 +85,10 @@ const Surveys = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to new result entry.");
+        throw new Error("Failed to add new result entry.");
       }
       const data = await response.json();
-      console.log("New Result Entry:", data);
+      console.log("New result entry:", data);
       alert("Result entry added successfully.");
       // Open the default email client with the pre-filled email fields
       window.location.href = mailtoLink;
@@ -98,55 +99,63 @@ const Surveys = () => {
   };
 
   useEffect(() => {
-    async function fetchCandidates() {
-      const response = await fetch("http://localhost:3306/select_candidates");
-      const data = await response.json();
-      setCandidates(data);
-      setOptions(
-        data?.map(function (element) {
-          return (
-            <option key={element.id} value={element.name}>
-              {element.name}
-            </option>
-          );
-        })
-      );
-    }
+    const fetchCandidates = async () => {
+      try {
+        const response = await fetch("http://localhost:3306/select_candidates");
+        const data = await response.json();
+        setCandidates(data);
+        setOptions(
+          data?.map(function (element) {
+            return (
+              <option key={element.id} value={element.name}>
+                {element.name}
+              </option>
+            );
+          })
+        );
+      } catch (error) {
+        console.error("Error fetching candidates:", error);
+      }
+    };
     fetchCandidates();
   }, []);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      const response = await fetch("http://localhost:3306/select_quizzes");
-      const data = await response.json();
-      setQuizzes(data);
-      setTableEntries(
-        data?.map(function (element) {
-          return (
-            <tr key={element.id} employee-id={element.Employers_id}>
-              <td>{element.title}</td>
-              <td>
-                <select name="candidates" id="candidates">
-                  {options}
-                </select>
-              </td>
-              <td>
-                <button
-                  className="btn"
-                  onClick={() =>
-                    handleSendToCandidate(
-                      element.id,
-                      document.getElementById("candidates").value
-                    )
-                  }
-                >
-                  Send to candidate
-                </button>
-              </td>
-            </tr>
-          );
-        })
-      );
+      try {
+        const response = await fetch("http://localhost:3306/select_quizzes");
+        const data = await response.json();
+        setQuizzes(data);
+        setTableEntries(
+          data?.map(function (element) {
+            return (
+              <tr key={element.id} employee-id={element.Employers_id}>
+                <td>{element.title}</td>
+                <td>
+                  <select name="candidates" id="candidates">
+                    {options}
+                  </select>
+                </td>
+                <td>
+                  <button
+                    className="btn"
+                    onClick={() =>
+                      handleSendToCandidate(
+                        element.id,
+                        document.getElementById("candidates").value
+                      )
+                    }
+                  >
+                    Send to candidate
+                  </button>
+                </td>
+              </tr>
+            );
+          })
+        );
+      } catch (error) {
+        console.error("Error fetching quizzes:", error);
+      }
     };
     fetchQuizzes();
   }, [options]);

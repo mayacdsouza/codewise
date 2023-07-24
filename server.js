@@ -164,12 +164,12 @@ app.post("/add_candidate", (req, res) => {
 
 // Add new results entry to 'send to candidate' button on surveys page
 app.post("/add_result", (req, res) => {
-  const { quiz_id, employer_id, candidate_id, link } = req.body;
+  const { grade, quiz_id, employer_id, candidate_id, link } = req.body;
   const sql = `
-    INSERT INTO Results (Quizzes_id, Employers_id, Candidates_id, link)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO Results (grade, Quizzes_id, Employers_id, Candidates_id, link)
+    VALUES (?, ?, ?, ?, ?)
   `;
-  const values = [quiz_id, employer_id, candidate_id, link];
+  const values = [grade, quiz_id, employer_id, candidate_id, link];
 
   db.query(sql, values, (err, result, fields) => {
     if (err) {
@@ -181,6 +181,7 @@ app.post("/add_result", (req, res) => {
 
     if (result) {
       res.status(200).json({
+        grade: req.body.grade,
         quiz_id: req.body.quiz_id,
         employer_id: req.body.employer_id,
         candidate_id: req.body.candidate_id,
@@ -189,6 +190,104 @@ app.post("/add_result", (req, res) => {
     }
   });
 });
+
+// Get result_id, quiz_id, employer_id, candidate_id using results keylink on quiz page
+app.get("/select_quiz_employer_candidate/:link", function (req, res) {
+  const link = req.params.link;
+  const sql = `SELECT id, Quizzes_id, Employers_id, Candidates_id FROM Results WHERE link = ?`;
+  db.query(sql, [link], (err, result) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ error: "Internal server error" });
+    } else {
+      res.json(result);
+    }
+  });
+});
+
+// Get employer email from Employers for 'submit quiz' button on quiz page
+app.get("/get_employer_email/:employerId", (req, res) => {
+  const employerId = req.params.employerId;
+  const sql = `SELECT email FROM Employers WHERE id = ?`;
+  
+  db.query(sql, [employerId], (err, result) => {
+    if (err) {
+      console.error("Error fetching employer email:", err);
+      res.status(500).json({ error: "Internal server error" });
+    } else {
+      if (result.length === 0) {
+        res.status(404).json({ error: "Employer not found" });
+      } else {
+        res.json(result)
+      }
+    }
+  });
+});
+
+// Get candidate name from Candidates for 'submit quiz' button on quiz page
+app.get("/get_candidate_name/:candidateId", (req, res) => {
+  const candidateId = req.params.candidateId;
+  const sql = `SELECT name FROM Candidates WHERE id = ?`;
+  
+  db.query(sql, [candidateId], (err, result) => {
+    if (err) {
+      console.error("Error fetching candidate name:", err);
+      res.status(500).json({ error: "Internal server error" });
+    } else {
+      if (result.length === 0) {
+        res.status(404).json({ error: "Candidate not found" });
+      } else {
+        const candidateName = result[0].name;
+        res.json({ name: candidateName });
+      }
+    }
+  });
+});
+
+// Get quiz title from Quizzes for 'submit quiz' button on quiz page
+app.get("/get_quiz_title/:quizId", (req, res) => {
+  const quizId = req.params.quizId;
+  const sql = `SELECT title FROM Quizzes WHERE id = ?`;
+  
+  db.query(sql, [quizId], (err, result) => {
+    if (err) {
+      console.error("Error fetching quiz title: ", err);
+      res.status(500).json({ error: "Internal server error" });
+    } else {
+      if (result.length === 0) {
+        res.status(404).json({ error: "Quiz not found" });
+      } else {
+        const quizTitle = result[0].title;
+        res.json({ title: quizTitle });
+      }
+    }
+  });
+});
+
+// Update results grade to 'submit quiz' button on quiz page
+app.put("/update_grade/:resultId", (req, res) => {
+  const resultId = req.params.resultId;
+  const { grade } = req.body;
+
+  if (!grade || isNaN(grade)) {
+    return res.status(400).json({ error: "Invalid grade. Grade must be a number." });
+  }
+
+  const sql = `UPDATE Results SET grade = ? WHERE id = ?`;
+
+  db.query(sql, [grade, resultId], (err, result) => {
+    if (err) {
+      console.error("Error updating grade:", err);
+      res.status(500).json({ error: "Internal server error" });
+    } 
+    if (result) {
+      res.status(200).json({
+        grade: req.body.grade,
+      });
+    }
+  });
+});
+
 
 // Get for displaying surveys in drop-down menu on results page
 app.get("/select_quizzes_results", function (req, res) {
