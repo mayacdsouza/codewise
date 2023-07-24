@@ -2,15 +2,19 @@ import React, { useState, useEffect } from "react";
 
 const Quiz = (props) => {
   // Todo: quiz should return a quiz dynamically created. Use results id to find quiz id and display that quiz. Add a submit button that updates quiz results when submitted.
-  const [quizResults, setQuizResults] = useState({});
   const [candidateName, setCandidateName] = useState("");
-  const [candidateEmail, setCandidateEmail] = useState("");
   const [quizEmployerCandidateData, setQuizEmployerCandidateData] = useState([]);
-  const [employerId, setEmployerId] = useState(null);
   const [employerEmail, setEmployerEmail] = useState("");
+  const [employerName, setEmployerName] = useState("");
   const [quizTitle, setQuizTitle] = useState("");
-  const [dataFetched, setDataFetched] = useState(false);
-  const [showSubmitButton, setShowSubmitButton] = useState(false);
+  const [isInitialClick, setIsInitialClick] = useState(true);
+
+  const handleInitialClick = async () => {
+    if (isInitialClick) {
+      setIsInitialClick(false);
+      await handleQuizSubmit();
+    }
+  };
 
   // Fetch data and set the 'dataFetched' state to true when completed
   const fetchData = async () => {
@@ -21,8 +25,6 @@ const Quiz = (props) => {
       const data = await response.json();
       console.log("Data:", data);
       setQuizEmployerCandidateData(data);
-      setDataFetched(true); // Set the flag to true when data is fetched
-      setShowSubmitButton(true); // Show the 'submit quiz' button when data is fetched
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -38,14 +40,17 @@ const Quiz = (props) => {
 
         if (employerData.length > 0) {
           const employerEmail = employerData[0].email;
+          const employerName = employerData[0].name;
           console.log("Employer email: " + employerEmail);
+          console.log("Employer name: " + employerName);
           setEmployerEmail(employerEmail);
+          setEmployerName(employerName);
         } else {
-          console.log("Employer email not found.");
+          console.log("Employer email/name not found.");
         }
       }
     } catch (error) {
-      console.error("Error fetching employer email:", error);
+      console.error("Error fetching employer email/name:", error);
     }
   };
 
@@ -88,18 +93,13 @@ const Quiz = (props) => {
 
   const handleQuizSubmit = async () => {
     try {
-      if (!dataFetched) {
-        console.log("Data not fetched yet, please wait...");
-        return;
-      }
       await fetchEmployerEmail();
       await fetchCandidateName();
       await fetchQuizTitle();
 
-      // Rest of the code to send the email
       if (employerEmail && candidateName && quizTitle) {
         const subject = "Quiz Results";
-        const body = `Dear Employer,\n\nCandidate ${candidateName} has submitted their ${quizTitle} quiz.\n\n\nBest regards,\nCodewise`;
+        const body = `Dear ${employerName},\n\nCandidate ${candidateName} has submitted their ${quizTitle} quiz.\n\n\nBest regards,\nCodewise`;
 
         const mailtoLink = `mailto:${employerEmail}?subject=${encodeURIComponent(
           subject
@@ -138,34 +138,20 @@ const Quiz = (props) => {
     fetchData();
   }, [props.value]);
 
-  // Watch for changes in the 'dataFetched' state, and when it becomes true, set 'showSubmitButton' to true
-  useEffect(() => {
-    if (dataFetched) {
-      setShowSubmitButton(true);
-    }
-  }, [dataFetched]);
 
   return (
     <div className="settings-container">
       <h1>Title goes here</h1>
       <div>Printing key link for now: {props.value}</div>
-      <div>
-        {/* Candidate name will be linked to key link (key link is part of results entry so can use this to get the candidate name and email. I just commented out though in case you still wanted to reference or use this code in any way.)
-        <label>Candidate Name:</label>
-        <input
-          value={candidateName}
-          onChange={(e) => setCandidateName(e.target.value)}
-        />
-        <br />
-        <label>Candidate Email:</label>
-        <input
-          value={candidateEmail}
-          onChange={(e) => setCandidateEmail(e.target.value)}
-        /> */}
-      </div>
       {/* Quiz questions and options go here */}
-      {/* Only render the 'submit quiz' button when data is fetched */}
-      {showSubmitButton && <button onClick={handleQuizSubmit}>Submit Quiz</button>}
+      {isInitialClick ? (
+        <button onClick={handleInitialClick}>Submit Quiz</button>
+      ) : (
+        <>
+          <p>Click 'Confirm and Send' again to submit the quiz.</p>
+          <button onClick={handleQuizSubmit}>Confirm and Send</button>
+        </>
+      )}
       <br />
       <br />
     </div>

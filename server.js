@@ -208,7 +208,7 @@ app.get("/select_quiz_employer_candidate/:link", function (req, res) {
 // Get employer email from Employers for 'submit quiz' button on quiz page
 app.get("/get_employer_email/:employerId", (req, res) => {
   const employerId = req.params.employerId;
-  const sql = `SELECT email FROM Employers WHERE id = ?`;
+  const sql = `SELECT name, email FROM Employers WHERE id = ?`;
   
   db.query(sql, [employerId], (err, result) => {
     if (err) {
@@ -309,6 +309,14 @@ app.get("/select_candidates_results", function (req, res) {
 app.get("/select_links", function (req, res) {
   let query1 = `SELECT link FROM Results`;
   db.query(query1, [], (err, result) => {
+    res.send(result);
+  });
+});
+
+// Get for employer id for custom results routes
+app.get("/select_employer_id", function (req, res) {
+  let sql = `SELECT id FROM Employers`;
+  db.query(sql, [], (err, result) => {
     res.send(result);
   });
 });

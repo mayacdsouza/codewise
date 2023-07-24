@@ -42,6 +42,8 @@ function AppContent() {
   const isLoginPage = location.pathname === "/";
   // TODO: change to select all the link parameters from results
   const [quizzes, setQuizzes] = useState([]);
+  const [employerId, setEmployerId] = useState([]);
+
   useEffect(() => {
     async function fetchQuizzes() {
       const response = await fetch("http://localhost:3306/select_links");
@@ -49,6 +51,15 @@ function AppContent() {
       setQuizzes(data?.map((row) => row.link));
     }
     fetchQuizzes();
+  }, []);
+
+  useEffect(() => {
+    async function fetchEmployerId() {
+      const response = await fetch("http://localhost:3306/select_employer_id");
+      const data = await response.json();
+      setEmployerId(data?.map((row) => row.id));
+    }
+    fetchEmployerId();
   }, []);
 
   return (
@@ -60,7 +71,9 @@ function AppContent() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/surveys" element={<Surveys />} />
         <Route path="/newsurveys" element={<NewSurveys />} />
-        <Route path="/results" element={<Results />} />
+        {employerId.map((employer, key) => (
+          <Route path={"/" + employer} element={<Results value={employer} />} />
+        ))}
         {quizzes.map((quiz, key) => (
           <Route path={"/" + quiz} element={<Quiz value={quiz} />} />
         ))}

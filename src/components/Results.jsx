@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Results.css';
 
-const Results = () => {
+const Results = (props) => {
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [quizzes, setQuizzes] = useState([]);
@@ -89,6 +89,7 @@ const Results = () => {
   return (
     <div className="results-container">
       <h1>Results</h1>
+      <h3>Showing results for employer: {props.value}</h3>
       <h2>View Results by Quiz</h2>
       <div className="results-edit">
         {/* Dropdown menu for selecting the quiz */}
