@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
+import QuizQuestion from "./QuizQuestion";
 
 const Quiz = (props) => {
   // Todo: quiz should return a quiz dynamically created. Use results id to find quiz id and display that quiz. Add a submit button that updates quiz results when submitted.
   const [candidateName, setCandidateName] = useState("");
-  const [quizEmployerCandidateData, setQuizEmployerCandidateData] = useState([]);
+  const [quizEmployerCandidateData, setQuizEmployerCandidateData] = useState(
+    []
+  );
   const [employerEmail, setEmployerEmail] = useState("");
   const [employerName, setEmployerName] = useState("");
   const [quizTitle, setQuizTitle] = useState("");
+  const [quizId, setQuizId] = useState("");
   const [isInitialClick, setIsInitialClick] = useState(true);
 
   const handleInitialClick = async () => {
@@ -21,10 +25,14 @@ const Quiz = (props) => {
     try {
       const link = props.value;
       console.log("Link: " + link);
-      const response = await fetch(`http://localhost:3306/select_quiz_employer_candidate/${link}`);
+      const response = await fetch(
+        `http://localhost:3306/select_quiz_employer_candidate/${link}`
+      );
       const data = await response.json();
       console.log("Data:", data);
       setQuizEmployerCandidateData(data);
+      setQuizId(data[0].Quizzes_id);
+      console.log(quizEmployerCandidateData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -35,7 +43,9 @@ const Quiz = (props) => {
       if (quizEmployerCandidateData && quizEmployerCandidateData.length > 0) {
         const employerId = quizEmployerCandidateData[0].Employers_id;
         console.log("Employer ID: " + employerId);
-        const employerResponse = await fetch(`http://localhost:3306/get_employer_email/${employerId}`);
+        const employerResponse = await fetch(
+          `http://localhost:3306/get_employer_email/${employerId}`
+        );
         const employerData = await employerResponse.json();
 
         if (employerData.length > 0) {
@@ -59,7 +69,9 @@ const Quiz = (props) => {
       if (quizEmployerCandidateData && quizEmployerCandidateData.length > 0) {
         const candidateId = quizEmployerCandidateData[0].Candidates_id;
         console.log("Candidate ID: " + candidateId);
-        const candidateResponse = await fetch(`http://localhost:3306/get_candidate_name/${candidateId}`);
+        const candidateResponse = await fetch(
+          `http://localhost:3306/get_candidate_name/${candidateId}`
+        );
         const candidateData = await candidateResponse.json();
 
         if (candidateData) {
@@ -78,9 +90,12 @@ const Quiz = (props) => {
       if (quizEmployerCandidateData && quizEmployerCandidateData.length > 0) {
         const quizId = quizEmployerCandidateData[0].Quizzes_id;
         console.log("Quiz ID: " + quizId);
-        const quizResponse = await fetch(`http://localhost:3306/get_quiz_title/${quizId}`);
+        const quizResponse = await fetch(
+          `http://localhost:3306/get_quiz_title/${quizId}`
+        );
         const quizData = await quizResponse.json();
-        if (quizData && quizData.title) { // Check if the title key exists in the response
+        if (quizData && quizData.title) {
+          // Check if the title key exists in the response
           const quizTitle = quizData.title;
           console.log("Quiz title: " + quizTitle);
           setQuizTitle(quizTitle);
@@ -108,15 +123,18 @@ const Quiz = (props) => {
         // Send a PUT request to update result grade
         const resultId = quizEmployerCandidateData[0].id;
         console.log("Result ID: " + resultId);
-        const response = await fetch(`http://localhost:3306/update_grade/${resultId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            grade: 100, // Todo: Update variable to correct grade
-          }),
-        });
+        const response = await fetch(
+          `http://localhost:3306/update_grade/${resultId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              grade: 100, // Todo: Update variable to correct grade
+            }),
+          }
+        );
 
         if (response.status === 200) {
           const data = await response.json();
@@ -138,12 +156,29 @@ const Quiz = (props) => {
     fetchData();
   }, [props.value]);
 
+  useEffect(() => {
+    // Fetch quiz results based on the selected quiz
+    async function fetchQuizResults(quizId) {
+      const response = await fetch(
+        `http://localhost:3306/get_quiz_title/${quizId}`
+      );
+      const data = await response.json();
+      setQuizTitle(data.title);
+    }
+
+    fetchQuizResults(quizId);
+  }, [quizId]);
 
   return (
-    <div className="settings-container">
-      <h1>Title goes here</h1>
-      <div>Printing key link for now: {props.value}</div>
+    <div>
+      <h1> {quizTitle}</h1>
       {/* Quiz questions and options go here */}
+      {
+        <div>
+          {" "}
+          <QuizQuestion question="What is your favorite color in the whole world?" />
+        </div>
+      }
       {isInitialClick ? (
         <button onClick={handleInitialClick}>Submit Quiz</button>
       ) : (

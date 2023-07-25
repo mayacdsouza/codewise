@@ -355,6 +355,20 @@ app.get("/results/:quizId", (req, res) => {
   );
 });
 
+// Get for displaying results per quiz on results page
+app.get("/get_quiz_title/:quizId", (req, res) => {
+  db.query(
+    "Select title from Results inner join Quizzes on Results.Quizzes_id=Quizzes.id where Quizzes.id = ?",
+    (err, results) => {
+      if (err) {
+        console.error("Error executing the query:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+      res.json(results);
+    }
+  );
+});
+
 app.listen(dbPort, () => {
   console.log("Express server is running on port " + dbPort);
 });
