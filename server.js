@@ -159,7 +159,24 @@ app.get("/select_candidates", function (req, res) {
 
 // Adding a candidate on surveys page
 app.post("/add_candidate", (req, res) => {
-  if (req.body) res.send("test");
+  const { name, email } = req.body;
+  const sql = `INSERT into Candidates (name, email) VALUES (?,?)`;
+  const values = [name, email];
+  db.query(sql, values, (err, result, fields) => {
+    if (err) {
+      console.error("Error adding new candidate:", err);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while adding the candidate." });
+    }
+
+    if (result) {
+      res.status(200).json({
+        name: req.body.name,
+        email: req.body.email,
+      });
+    }
+  });
 });
 
 // Add new results entry to 'send to candidate' button on surveys page
@@ -209,7 +226,7 @@ app.get("/select_quiz_employer_candidate/:link", function (req, res) {
 app.get("/get_employer_email/:employerId", (req, res) => {
   const employerId = req.params.employerId;
   const sql = `SELECT name, email FROM Employers WHERE id = ?`;
-  
+
   db.query(sql, [employerId], (err, result) => {
     if (err) {
       console.error("Error fetching employer email:", err);
@@ -218,7 +235,7 @@ app.get("/get_employer_email/:employerId", (req, res) => {
       if (result.length === 0) {
         res.status(404).json({ error: "Employer not found" });
       } else {
-        res.json(result)
+        res.json(result);
       }
     }
   });
@@ -228,7 +245,7 @@ app.get("/get_employer_email/:employerId", (req, res) => {
 app.get("/get_candidate_name/:candidateId", (req, res) => {
   const candidateId = req.params.candidateId;
   const sql = `SELECT name FROM Candidates WHERE id = ?`;
-  
+
   db.query(sql, [candidateId], (err, result) => {
     if (err) {
       console.error("Error fetching candidate name:", err);
@@ -248,7 +265,7 @@ app.get("/get_candidate_name/:candidateId", (req, res) => {
 app.get("/get_quiz_title/:quizId", (req, res) => {
   const quizId = req.params.quizId;
   const sql = `SELECT title FROM Quizzes WHERE id = ?`;
-  
+
   db.query(sql, [quizId], (err, result) => {
     if (err) {
       console.error("Error fetching quiz title: ", err);
@@ -270,7 +287,9 @@ app.put("/update_grade/:resultId", (req, res) => {
   const { grade } = req.body;
 
   if (!grade || isNaN(grade)) {
-    return res.status(400).json({ error: "Invalid grade. Grade must be a number." });
+    return res
+      .status(400)
+      .json({ error: "Invalid grade. Grade must be a number." });
   }
 
   const sql = `UPDATE Results SET grade = ? WHERE id = ?`;
@@ -279,7 +298,7 @@ app.put("/update_grade/:resultId", (req, res) => {
     if (err) {
       console.error("Error updating grade:", err);
       res.status(500).json({ error: "Internal server error" });
-    } 
+    }
     if (result) {
       res.status(200).json({
         grade: req.body.grade,
@@ -287,7 +306,6 @@ app.put("/update_grade/:resultId", (req, res) => {
     }
   });
 });
-
 
 // Get for displaying surveys in drop-down menu on results page
 app.get("/select_quizzes_results", function (req, res) {

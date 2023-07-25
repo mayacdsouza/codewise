@@ -9,28 +9,29 @@ const Surveys = () => {
   const [tableEntries, setTableEntries] = useState();
   const [options, setOptions] = useState();
   const [candidates, setCandidates] = useState();
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
 
-  const handleCandidateInput = (e) => {
-    setName(e.target.name);
-    setEmail(e.target.email);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleCandidateInput = async (e) => {
+    try {
+      const response = await fetch("http://localhost:3306/add_candidate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+        }),
+      });
+      setName("");
+      setEmail("");
+    } catch (error) {
+      console.error("Error adding new result entry:", error);
+      alert(error);
+    }
   };
-
-  // const params = {
-  //   name: name,
-  //   email: email,
-  // };
-
-  // fetch("http://localhost:3306/add_candidate", {
-  //   Method: "POST",
-  //   Headers: {
-  //     Accept: "application.json",
-  //     "Content-Type": "application/json",
-  //   },
-  //   Body: JSON.stringify(params),
-  //   Cache: "default",
-  // });
 
   const handleSendToCandidate = async (selectedSurvey, selectedCandidates) => {
     try {
@@ -176,15 +177,29 @@ const Surveys = () => {
         {" "}
         <h2>Add a new candidate</h2>
         <form onSubmit={handleCandidateInput}>
-          <label>
-            Name:
-            <input type="text" name="name" placeholder="Name" />
-          </label>
-          <label>
-            Email
-            <input type="text" name="email" placeholder="Email" />
-          </label>
-          <input type="submit" value="Submit" />
+          <div>
+            <label htmlFor="name">Name:</label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(event) => {
+                setName(event.target.value);
+              }}
+            />
+          </div>
+          <div>
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="text"
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
+            />
+          </div>
+          <button type="submit">Submit</button>
         </form>
         <br></br>
         <br></br>
