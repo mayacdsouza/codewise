@@ -40,6 +40,14 @@
   margin-left: 20px; /* Add left margin for indentation */
 }
 
+.question {
+  text-align: left;
+}
+
+.question-inner {
+  text-align: center;
+}
+
 .profile-edit h2 {
   font-size: 18px;
   margin-bottom: 30px;

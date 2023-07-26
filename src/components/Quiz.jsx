@@ -12,6 +12,7 @@ const Quiz = (props) => {
   const [quizTitle, setQuizTitle] = useState("");
   const [quizId, setQuizId] = useState("");
   const [isInitialClick, setIsInitialClick] = useState(true);
+  const [questions, setQuestions] = useState();
 
   const handleInitialClick = async () => {
     if (isInitialClick) {
@@ -166,7 +167,16 @@ const Quiz = (props) => {
       setQuizTitle(data.title);
     }
 
+    async function fetchQuestionResults(quizId) {
+      const response = await fetch(
+        `http://localhost:3306/get_quiz_questions/${quizId}`
+      );
+      const data = await response.json();
+      setQuestions(data);
+    }
+
     fetchQuizResults(quizId);
+    fetchQuestionResults(quizId);
   }, [quizId]);
 
   return (
@@ -175,8 +185,17 @@ const Quiz = (props) => {
       {/* Quiz questions and options go here */}
       {
         <div>
-          {" "}
-          <QuizQuestion question="What is your favorite color in the whole world?" />
+          {questions &&
+            questions.map((element, key) => (
+              <QuizQuestion
+                type={element.type}
+                question={element.question}
+                a={element.a}
+                b={element.b}
+                c={element.c}
+                d={element.d}
+              />
+            ))}
         </div>
       }
       {isInitialClick ? (

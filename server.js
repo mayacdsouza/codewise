@@ -339,7 +339,7 @@ app.get("/select_employer_id", function (req, res) {
   });
 });
 
-// Get for displaying results per quiz on results page
+// Get for displaying quiz title on quiz page
 app.get("/results/:quizId", (req, res) => {
   const quizId = req.params.quizId;
   db.query(
@@ -355,10 +355,12 @@ app.get("/results/:quizId", (req, res) => {
   );
 });
 
-// Get for displaying results per quiz on results page
-app.get("/get_quiz_title/:quizId", (req, res) => {
+// Get for displaying quiz questions on quiz page
+app.get("/get_quiz_questions/:quizId", (req, res) => {
+  const quizId = req.params.quizId;
   db.query(
-    "Select title from Results inner join Quizzes on Results.Quizzes_id=Quizzes.id where Quizzes.id = ?",
+    "Select type, question, answer, a, b, c, d from Questions where Quizzes_id=?",
+    [quizId],
     (err, results) => {
       if (err) {
         console.error("Error executing the query:", err);
