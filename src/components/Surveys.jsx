@@ -36,8 +36,12 @@ const Surveys = () => {
   const handleSendToCandidate = async (selectedSurvey, selectedCandidates) => {
     try {
       // Check if quizzes and candidates are loaded
-      if (!quizzes || !candidates) {
-        console.error("Quizzes and/or candidates data not loaded.");
+      if (!quizzes) {
+        console.error("Quizzes data not loaded.");
+        return;
+      }
+      if (!candidates) {
+        console.error("Candidates data not loaded.");
         return;
       }
       // Find the selected quiz in the quizzes array based on the selectedSurvey ID
@@ -159,7 +163,7 @@ const Surveys = () => {
       }
     };
     fetchQuizzes();
-  }, [options]);
+  }, [quizzes, options]);
 
   return (
     <div className="settings-container">
