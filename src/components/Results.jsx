@@ -21,7 +21,7 @@ const Results = () => {
     const user = sessionStorage.getItem('loggedInUser');
     if (!user) {
       // Redirect the user to the login page if no valid user data exists
-      alert("Please log in to access your Settings.")
+      alert("Please log in to access your results.")
       navigate('/');
     }
   }, [navigate]);
