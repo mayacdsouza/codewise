@@ -4,7 +4,7 @@ It imports necessary dependencies from the React and 'react-router-dom' librarie
 the required CSS file for styling.
 */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Settings.css";
 
@@ -19,6 +19,15 @@ const Settings = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const user = sessionStorage.getItem('loggedInUser');
+    if (!user) {
+      // Redirect the user to the login page if no valid user data exists
+      alert("Please log in to access your Settings.")
+      navigate('/');
+    }
+  }, [navigate]);
 
   /*
   Event handler for email input changes in the edit profile form.

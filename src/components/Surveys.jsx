@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Surveys.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Surveys = () => {
   // Todo: Change candidateName and email to be unique for each input element
@@ -9,9 +9,18 @@ const Surveys = () => {
   const [tableEntries, setTableEntries] = useState();
   const [options, setOptions] = useState();
   const [candidates, setCandidates] = useState();
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = sessionStorage.getItem('loggedInUser');
+    if (!user) {
+      // Redirect the user to the login page if no valid user data exists
+      alert("Please log in to access your Settings.")
+      navigate('/');
+    }
+  }, [navigate]);
 
   const handleCandidateInput = async (e) => {
     try {

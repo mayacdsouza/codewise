@@ -59,6 +59,25 @@ app.post("/", (req, res) => {
   }
 });
 
+// Get employer name from Employers on dashboard page
+app.get("/get_employer_name/:employerEmail", (req, res) => {
+  const employerEmail = req.params.employerEmail;
+  const sql = `SELECT name FROM Employers WHERE email = ?`;
+
+  db.query(sql, [employerEmail], (err, result) => {
+    if (err) {
+      console.error("Error fetching employer name:", err);
+      res.status(500).json({ error: "Internal server error" });
+    } else {
+      if (result.length === 0) {
+        res.status(404).json({ error: "Employer not found" });
+      } else {
+        res.json(result);
+      }
+    }
+  });
+});
+
 // Handle settings form submissions
 app.post("/settings", (req, res) => {
   const { formType, email, oldPassword, newPassword, deleteEmail, password } =
@@ -307,10 +326,52 @@ app.put("/update_grade/:resultId", (req, res) => {
   });
 });
 
-// Get for displaying surveys in drop-down menu on results page
-app.get("/select_quizzes_results", function (req, res) {
-  let query1 = `SELECT id, title FROM Quizzes`;
-  db.query(query1, [], (err, result) => {
+// Get employer_id from employer_email for results page
+app.get("/get_employer_id/:employerEmail", function (req, res) {
+  const employerEmail = req.params.employerEmail;
+  let query1 = `SELECT id FROM Employers WHERE email = ?`;
+  db.query(query1, [employerEmail], (err, result) => {
+    if (err) {
+      console.error("Error fetching employer ID:", err);
+      res.status(500).json({ error: "Error fetching employer ID" });
+    } else {
+      res.json(result);
+    }
+  });
+});
+
+// Get for displaying surveys (that the employer made) in drop-down menu on results page
+app.get("/select_quizzes_results/:employerId", function (req, res) {
+  const employerId = req.params.employerId;
+  let query1 = `SELECT id, title FROM Quizzes WHERE Employers_id = ?`;
+  db.query(query1, [employerId], (err, result) => {
+    res.send(result);
+  });
+});
+
+// Get quiz_id from quiz_title for results page
+app.get("/get_quiz_id/:quizTitle", function (req, res) {
+  let query = `SELECT id FROM Quizzes WHERE title = ?`;
+  const quizTitle = req.params.quizTitle;
+  db.query(query, [quizTitle], (err, result) => {
+    if (err) {
+      console.error("Error fetching quiz ID:", err);
+      res.status(500).send("Error fetching quiz ID.");
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+// Get for displaying quiz result table 
+app.get("/get_quiz_results/:selectedQuizId", function (req, res) {
+  const selectedQuizId = req.params.selectedQuizId;
+  let query1 = `SELECT name, grade
+  FROM Results
+  INNER JOIN Candidates ON Candidates.id = Results.Candidates_id
+  WHERE Quizzes_id = ?
+  ORDER BY grade DESC`;
+  db.query(query1, [selectedQuizId], (err, result) => {
     res.send(result);
   });
 });
@@ -323,6 +384,46 @@ app.get("/select_candidates_results", function (req, res) {
   });
 });
 
+// Get candidate_id from candidate_name for results page
+app.get("/get_candidate_id/:candidateName", function (req, res) {
+  const candidateName = req.params.candidateName;
+  let query = `SELECT id FROM Candidates WHERE name = ?`;
+
+  db.query(query, [candidateName], (err, result) => {
+    if (err) {
+      console.error("Error fetching candidate ID:", err);
+      res.status(500).send("Error fetching candidate ID.");
+    } else {
+      if (result.length > 0) {
+        // Candidate found, send the candidate ID
+        res.send(result);
+      } else {
+        // Candidate not found, send a suitable response
+        res.status(404).send("Candidate not found.");
+      }
+    }
+  });
+});
+
+// Get for displaying candidate result table
+app.get("/get_candidate_results/:selectedCandidateId", function (req, res) {
+  const selectedCandidateId = req.params.selectedCandidateId;
+  let query = `SELECT title, grade
+               FROM Results
+               INNER JOIN Quizzes ON Quizzes.id = Results.Quizzes_id
+               WHERE Candidates_id = ?
+               ORDER BY grade DESC`;
+
+  db.query(query, [selectedCandidateId], (err, result) => {
+    if (err) {
+      console.error("Error fetching candidate results:", err);
+      res.status(500).send("Error fetching candidate results.");
+    } else {
+      res.send(result);
+    }
+  });
+});
+
 // Get for keylinks for custom quiz routes
 app.get("/select_links", function (req, res) {
   let query1 = `SELECT link FROM Results`;
@@ -332,12 +433,12 @@ app.get("/select_links", function (req, res) {
 });
 
 // Get for employer id for custom results routes
-app.get("/select_employer_id", function (req, res) {
-  let sql = `SELECT id FROM Employers`;
-  db.query(sql, [], (err, result) => {
-    res.send(result);
-  });
-});
+// app.get("/select_employer_id", function (req, res) {
+//   let sql = `SELECT id FROM Employers`;
+//   db.query(sql, [], (err, result) => {
+//     res.send(result);
+//   });
+// });
 
 // Get for displaying quiz title on quiz page
 app.get("/results/:quizId", (req, res) => {

@@ -38,6 +38,38 @@ function Login() {
   const [isSignUpActive, setIsSignUpActive] = useState(false)
 
   /*
+  Function to set the logged-in user data in sessionStorage.
+  */
+  const setLoggedInUser = (userData) => {
+    sessionStorage.setItem('loggedInUser', JSON.stringify(userData));
+  };
+
+  /*
+  Function to get the logged-in user data from sessionStorage.
+  */
+  const getLoggedInUser = () => {
+    const userData = sessionStorage.getItem('loggedInUser');
+    return JSON.parse(userData);
+  };
+
+  /*
+  Function to check if the user is already logged in.
+  It should be called when the Login component mounts.
+  */
+  const checkLoggedIn = () => {
+    const user = getLoggedInUser();
+    if (user) {
+      // Perform any other actions you need when the user is logged in
+      navigate('/dashboard');
+    }
+  };
+
+  // Check if the user is already logged in when the component mounts
+  useEffect(() => {
+    checkLoggedIn();
+  }, []);
+
+  /*
   The useEffect hook is used to add event listeners to handle sign up and sign in button clicks.
   It runs only once, when the component is mounted.
   */
@@ -125,6 +157,9 @@ function Login() {
             } else {
               setBackendError([]);
               if (res.data === "Success") {
+                const userData = { email: values.login_email };
+                console.log("User data: " + userData.email)
+                setLoggedInUser(userData);
                 navigate('/dashboard');
               } else {
                 alert("Account does not exist.");
