@@ -11,14 +11,46 @@ const Surveys = () => {
   const [candidates, setCandidates] = useState();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [employerId, setEmployerId] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = sessionStorage.getItem('loggedInUser');
+    const user = sessionStorage.getItem("loggedInUser");
     if (!user) {
       // Redirect the user to the login page if no valid user data exists
-      alert("Please log in to access your surveys.")
-      navigate('/');
+      alert("Please log in to access your surveys.");
+      navigate("/");
+    } else {
+      const fetchEmployerId = async () => {
+        try {
+          const employerEmailData = JSON.parse(
+            sessionStorage.getItem("loggedInUser")
+          );
+          const employerEmail = employerEmailData?.email?.[0];
+          if (employerEmail) {
+            const employerResponse = await fetch(
+              `http://localhost:3306/get_employer_id/${employerEmail}`
+            );
+
+            if (!employerResponse.ok) {
+              throw new Error("Failed to fetch employer ID.");
+            }
+
+            const employerData = await employerResponse.json();
+
+            if (employerData.length > 0) {
+              const employerId = employerData[0].id;
+              setEmployerId(employerId);
+            } else {
+              console.log("Employer ID not found.");
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching employer ID:", error);
+        }
+      };
+      fetchEmployerId();
     }
   }, [navigate]);
 
@@ -137,7 +169,9 @@ const Surveys = () => {
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const response = await fetch("http://localhost:3306/select_quizzes");
+        const response = await fetch(
+          `http://localhost:3306/select_quizzes/${employerId}`
+        );
         const data = await response.json();
         setQuizzes(data);
         setTableEntries(
@@ -172,7 +206,7 @@ const Surveys = () => {
       }
     };
     fetchQuizzes();
-  }, [quizzes, options]);
+  }, [quizzes, employerId]);
 
   return (
     <div className="settings-container">
@@ -180,7 +214,7 @@ const Surveys = () => {
       <nav className="navbar">
         {" "}
         <Link to="/newsurveys" className="nav-link">
-          Create a new survey
+          Create New Survey
         </Link>
       </nav>
       <br></br>

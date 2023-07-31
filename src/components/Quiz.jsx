@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import QuizQuestion from "./QuizQuestion";
+import { useNavigate } from "react-router-dom";
 
 const Quiz = (props) => {
   // Todo: quiz should return a quiz dynamically created. Use results id to find quiz id and display that quiz. Add a submit button that updates quiz results when submitted.
+
   const [candidateName, setCandidateName] = useState("");
   const [quizEmployerCandidateData, setQuizEmployerCandidateData] = useState(
     []
@@ -13,6 +15,7 @@ const Quiz = (props) => {
   const [quizId, setQuizId] = useState("");
   const [isInitialClick, setIsInitialClick] = useState(true);
   const [questions, setQuestions] = useState();
+  const [time, setTime] = useState({});
 
   const handleInitialClick = async () => {
     if (isInitialClick) {
@@ -107,12 +110,32 @@ const Quiz = (props) => {
     }
   };
 
+  const fetchQuizTime = async () => {
+    try {
+      if (quizEmployerCandidateData && quizEmployerCandidateData.length > 0) {
+        const quizId = quizEmployerCandidateData[0].Quizzes_id;
+        const quizResponse = await fetch(
+          `http://localhost:3306/get_quiz_time/${quizId}`
+        );
+        const quizData = await quizResponse.json();
+        if (quizData && quizData.time) {
+          console.log(quizData, "test");
+          let hours = quizData.time % 60;
+          let minutes = quizData.time - 60 * hours;
+          let seconds = 0;
+          setTime({ hours, minutes, seconds });
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching quiz title:", error);
+    }
+  };
+
   const handleQuizSubmit = async () => {
     try {
       await fetchEmployerEmail();
       await fetchCandidateName();
       await fetchQuizTitle();
-
       if (employerEmail && candidateName && quizTitle) {
         const subject = "Quiz Results";
         const body = `Dear ${employerName},\n\nCandidate ${candidateName} has submitted their ${quizTitle} quiz.\n\n\nBest regards,\nCodewise`;
@@ -150,12 +173,17 @@ const Quiz = (props) => {
     } catch (error) {
       console.error("Error handling quiz submission:", error);
     }
+    navigate("/");
   };
 
   // Get result_id, quiz_id, employer_id, candidate_id
   useEffect(() => {
     fetchData();
   }, [props.value]);
+
+  useEffect(() => {
+    fetchQuizTime();
+  }, [quizId]);
 
   useEffect(() => {
     // Fetch quiz results based on the selected quiz
@@ -179,10 +207,57 @@ const Quiz = (props) => {
     fetchQuestionResults(quizId);
   }, [quizId]);
 
+  const useInterval = (callback, delay) => {
+    const savedCallback = React.useRef();
+
+    React.useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    React.useEffect(() => {
+      const tick = () => {
+        savedCallback.current();
+      };
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  };
+
+  const navigate = useNavigate();
+
+  const decrementTime = (hours, minutes, seconds) => {
+    const newTime = { hours, minutes, seconds };
+    if (seconds) {
+      newTime.seconds = newTime.seconds - 1;
+    } else if (minutes) {
+      newTime.minutes = newTime.minutes - 1;
+      newTime.seconds = 59;
+    } else if (hours) {
+      newTime.hours = newTime.hours - 1;
+      newTime.minutes = 59;
+      newTime.seconds = 59;
+    } else handleQuizSubmit();
+    return newTime;
+  };
+
+  useInterval(() => {
+    if (time.hours || time.minutes || time.seconds) {
+      setTime(decrementTime(time.hours, time.minutes, time.seconds));
+    }
+  }, 1000);
+
   return (
     <div>
-      <h1> {quizTitle}</h1>
-      {/* Quiz questions and options go here */}
+      <br></br>
+      <h1>{quizTitle}</h1>
+      <h3>_________________________________________________________________</h3>
+      <h3>
+        Time Remaining Hours:{time.hours} Minutes:{time.minutes} Seconds:
+        {time.seconds}
+      </h3>
+      <h3>_________________________________________________________________</h3>
       {
         <div>
           {questions &&

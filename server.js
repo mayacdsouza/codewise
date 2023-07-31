@@ -161,9 +161,10 @@ app.post("/settings", (req, res) => {
 });
 
 //get for displaying surveys on surveys page
-app.get("/select_quizzes", function (req, res) {
-  let query1 = `SELECT id, Employers_id, title FROM Quizzes`;
-  db.query(query1, [], (err, result) => {
+app.get("/select_quizzes/:employerId", function (req, res) {
+  const employerId = req.params.employerId;
+  let query1 = `SELECT id, Employers_id, title FROM Quizzes WHERE Employers_id = ?`;
+  db.query(query1, [employerId], (err, result) => {
     res.send(result);
   });
 });
@@ -193,6 +194,73 @@ app.post("/add_candidate", (req, res) => {
       res.status(200).json({
         name: req.body.name,
         email: req.body.email,
+      });
+    }
+  });
+});
+
+//get for finding quiz id on new surveys page (used to know quiz id when creating a new question)
+app.get("/get_max_quiz_id", function (req, res) {
+  let query1 = `SELECT MAX(id) FROM Quizzes;`;
+  db.query(query1, [], (err, result) => {
+    res.send(result);
+  });
+});
+
+// Adding a question on new surveys page
+app.post("/add_question", (req, res) => {
+  const { type, question, answer, a, b, c, d, quizzesId } = req.body;
+  const sql = `INSERT into Questions (type, question, answer, a, b, c, d, Quizzes_id) VALUES (?,?,?,?,?,?,?,?)`;
+  const values = [type, question, answer, a, b, c, d, quizzesId];
+  db.query(sql, values, (err, result, fields) => {
+    if (err) {
+      console.error("Error adding new quiz:", err);
+      return res.status(500).json({
+        error: "An error occurred while adding the quiz.",
+        type,
+        question,
+        answer,
+        a,
+        b,
+        c,
+        d,
+        quizzesId,
+      });
+    }
+
+    if (result) {
+      res.status(200).json({
+        type,
+        question,
+        answer,
+        a,
+        b,
+        c,
+        d,
+        quizzesId,
+      });
+    }
+  });
+});
+
+// Adding a quiz on new surveys page
+app.post("/add_quiz", (req, res) => {
+  const { title, time, employerId } = req.body;
+  const sql = `INSERT into Quizzes (title, time, Employers_id) VALUES (?,?,?)`;
+  const values = [title, time, employerId];
+  db.query(sql, values, (err, result, fields) => {
+    if (err) {
+      console.error("Error adding new quiz:", err);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while adding the quiz." });
+    }
+
+    if (result) {
+      res.status(200).json({
+        title: req.body.title,
+        time: req.body.time,
+        employerId: req.body.employerId,
       });
     }
   });
@@ -300,6 +368,26 @@ app.get("/get_quiz_title/:quizId", (req, res) => {
   });
 });
 
+// Get quiz time from Quizzes
+app.get("/get_quiz_time/:quizId", (req, res) => {
+  const quizId = req.params.quizId;
+  const sql = `SELECT time FROM Quizzes WHERE id = ?`;
+
+  db.query(sql, [quizId], (err, result) => {
+    if (err) {
+      console.error("Error fetching quiz title: ", err);
+      res.status(500).json({ error: "Internal server error" });
+    } else {
+      if (result.length === 0) {
+        res.status(404).json({ error: "Quiz not found" });
+      } else {
+        const quizTime = result[0].time;
+        res.json({ time: quizTime });
+      }
+    }
+  });
+});
+
 // Update results grade to 'submit quiz' button on quiz page
 app.put("/update_grade/:resultId", (req, res) => {
   const resultId = req.params.resultId;
@@ -363,7 +451,7 @@ app.get("/get_quiz_id/:quizTitle", function (req, res) {
   });
 });
 
-// Get for displaying quiz result table 
+// Get for displaying quiz result table
 app.get("/get_quiz_results/:selectedQuizId", function (req, res) {
   const selectedQuizId = req.params.selectedQuizId;
   let query1 = `SELECT name, grade

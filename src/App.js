@@ -27,9 +27,11 @@ It sets up the routing configuration using React Router and renders the appropri
 */
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <div className="menuContainer">
+      <Router>
+        <AppContent />
+      </Router>
+    </div>
   );
 }
 
@@ -66,18 +68,15 @@ function AppContent() {
     <>
       {!isLoginPage && <Navbar />}
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/surveys" element={<Surveys />} />
-        <Route path="/newsurveys" element={<NewSurveys />} />
-        <Route path="/results" element={<Results />} />
+        <Route path="/" element={<Login />} key="a" />
+        <Route path="/dashboard" element={<Dashboard />} key="b" />
+        <Route path="/settings" element={<Settings />} key="c" />
+        <Route path="/surveys" element={<Surveys />} key="d" />
+        <Route path="/newsurveys" element={<NewSurveys />} key="e" />
+        <Route path="/results" element={<Results />} key="f" />
 
-        {/* {employerId.map((employer, key) => (
-          <Route path={"/" + employer} element={<Results value={employer} />} />
-        ))} */}
         {quizzes.map((quiz, key) => (
-          <Route path={"/" + quiz} element={<Quiz value={quiz} />} />
+          <Route path={"/" + quiz} element={<Quiz value={quiz} key={key} />} />
         ))}
       </Routes>
     </>

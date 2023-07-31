@@ -1,56 +1,56 @@
 .navbar {
-    background-color: #FF4B2B;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-  }
-  
-  .navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    padding: 0 20px;
-  }
-  
-  .navbar-logo {
-    color: #fff;
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
-  }
-  
-  .nav-menu {
-    display: flex;
-    list-style: none;
-    font-weight: bold;
-  }
-  
-  .nav-item {
-    margin-left: 20px;
-    font-weight: bold;
-  }
-  
-  .nav-link {
-    color: #fff;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 2.3; /* Add this line to adjust the line-height for proper alignment */
-    transition: color 0.3s;
-  }
-  
-  .nav-link:hover {
-    color: #ffdecf;
-  }
+  background-color: #ff4b2b;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}
 
-  /* Styles for the Logout button */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.navbar-logo {
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  font-weight: bold;
+}
+
+.nav-item {
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 2.3; /* Add this line to adjust the line-height for proper alignment */
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: #ffdecf;
+}
+
+/* Styles for the Logout button */
 .logout-button {
   text-transform: capitalize;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   background-color: #ff4b2b;
   color: #fff;
   border: none;
