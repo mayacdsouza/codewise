@@ -42,6 +42,7 @@ It also includes the Navbar component for non-login pages.
 function AppContent() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/";
+  const isQuizPage = location.pathname.includes("quiz");
   // TODO: change to select all the link parameters from results
   const [quizzes, setQuizzes] = useState([]);
   // const [employerId, setEmployerId] = useState([]);
@@ -55,18 +56,9 @@ function AppContent() {
     fetchQuizzes();
   }, []);
 
-  // useEffect(() => {
-  //   async function fetchEmployerId() {
-  //     const response = await fetch("http://localhost:3306/select_employer_id");
-  //     const data = await response.json();
-  //     setEmployerId(data?.map((row) => row.id));
-  //   }
-  //   fetchEmployerId();
-  // }, []);
-
   return (
     <>
-      {!isLoginPage && <Navbar />}
+      {!isLoginPage && !isQuizPage && <Navbar />}
       <Routes>
         <Route path="/" element={<Login />} key="a" />
         <Route path="/dashboard" element={<Dashboard />} key="b" />
@@ -76,7 +68,10 @@ function AppContent() {
         <Route path="/results" element={<Results />} key="f" />
 
         {quizzes.map((quiz, key) => (
-          <Route path={"/" + quiz} element={<Quiz value={quiz} key={key} />} />
+          <Route
+            path={"/quiz/" + quiz}
+            element={<Quiz value={quiz} key={key} />}
+          />
         ))}
       </Routes>
     </>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import QuizQuestion from "./QuizQuestion";
 import { useNavigate } from "react-router-dom";
+import "../styles/Surveys.css";
 
 const Quiz = (props) => {
   // Todo: quiz should return a quiz dynamically created. Use results id to find quiz id and display that quiz. Add a submit button that updates quiz results when submitted.
@@ -250,16 +251,21 @@ const Quiz = (props) => {
 
   return (
     <div>
+      <div className="navbar-quiz">
+        <div className="navbar-container-quiz">
+          <div className="navbar-logo">Codewise</div>
+          <div className="quiz-clock">
+            {time.hours < 10 ? "0" : ""}
+            {time.hours}:{time.minutes < 10 ? "0" : ""}
+            {time.minutes}:{time.seconds < 10 ? "0" : ""}
+            {time.seconds}
+          </div>
+        </div>
+      </div>
       <br></br>
-      <h1>{quizTitle}</h1>
-      <h3>_________________________________________________________________</h3>
-      <h3>
-        Time Remaining Hours:{time.hours} Minutes:{time.minutes} Seconds:
-        {time.seconds}
-      </h3>
-      <h3>_________________________________________________________________</h3>
+      <h1 className="quiz">{quizTitle}</h1>
       {
-        <div>
+        <div className="quiz">
           {questions &&
             questions.map((element, key) => (
               <QuizQuestion
@@ -273,14 +279,16 @@ const Quiz = (props) => {
             ))}
         </div>
       }
-      {isInitialClick ? (
-        <button onClick={handleInitialClick}>Submit Quiz</button>
-      ) : (
-        <>
-          <p>Click 'Confirm and Send' again to submit the quiz.</p>
-          <button onClick={handleQuizSubmit}>Confirm and Send</button>
-        </>
-      )}
+      <div className="quiz-button">
+        {isInitialClick ? (
+          <button onClick={handleInitialClick}>Submit Quiz</button>
+        ) : (
+          <>
+            <p>Click 'Confirm and Send' again to submit the quiz.</p>
+            <button onClick={handleQuizSubmit}>Confirm and Send</button>
+          </>
+        )}
+      </div>
       <br />
       <br />
     </div>
