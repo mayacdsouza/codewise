@@ -103,7 +103,7 @@ const Surveys = () => {
 
       // Prepare the email subject and body
       const subject = "Your Survey Link";
-      const body = `Dear ${selectedCandidate.name},\n\nPlease click the following link to access your survey: http://localhost:3000/${keyLink}\n\nBest regards,\nCodewise`;
+      const body = `Dear ${selectedCandidate.name},\n\nPlease click the following link to access your survey: http://localhost:3000/quiz/${keyLink}\n\nBest regards,\nCodewise`;
 
       console.log("Candidate name: " + selectedCandidate.name);
       console.log("Candidate email: " + selectedCandidate.email);

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import "../styles/Surveys.css";
 
 const NewSurveys = () => {
-  const [employerId, setEmployerId] = useState("");
+  const [employerId, setEmployerId] = useState(undefined);
   const [title, setTitle] = useState("");
   const [time, setTime] = useState("");
-  const [quizId, setQuizId] = useState("");
+  const [quizId, setQuizId] = useState(undefined);
   const [type, setType] = useState("Multiple Choice");
   const [question, setQuestion] = useState();
   const [answer, setAnswer] = useState();
@@ -13,9 +13,10 @@ const NewSurveys = () => {
   const [b, setB] = useState();
   const [c, setC] = useState();
   const [d, setD] = useState();
+  const [quizzes, setQuizzes] = useState(undefined);
 
-  const fetchEmployerId = async () => {
-    try {
+  useEffect(() => {
+    const fetchEmployerId = async () => {
       const employerEmailData = JSON.parse(
         sessionStorage.getItem("loggedInUser")
       );
@@ -38,29 +39,37 @@ const NewSurveys = () => {
           console.log("Employer ID not found.");
         }
       }
-    } catch (error) {
-      console.error("Error fetching employer ID:", error);
-    }
-  };
-
-  const fetchQuizId = async () => {
-    const quiz_id_response = await fetch(
-      `http://localhost:3306/get_max_quiz_id`
-    );
-    setQuizId(quiz_id_response["MAX(id)"] + 1);
-  };
-
-  useEffect(() => {
+    };
     fetchEmployerId();
   }, [employerId]);
 
   useEffect(() => {
+    const fetchQuizId = async () => {
+      const quiz_id_response = await fetch(
+        `http://localhost:3306/get_max_quiz_id`
+      );
+      if (!quizId) {
+        setQuizId(quiz_id_response["MAX(id)"] + 1);
+      }
+    };
     fetchQuizId();
   }, [quizId]);
 
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      const response = await fetch(
+        `http://localhost:3306/select_quizzes/${employerId}`
+      );
+      const data = await response.json();
+      if (!quizzes) {
+        setQuizzes(data);
+      }
+    };
+    employerId && fetchQuizzes();
+  }, [quizzes, employerId]);
+
   const handleQuestionInput = async (e) => {
     try {
-      console.log(type, question, answer, a, b, c, d);
       const response = await fetch("http://localhost:3306/add_question", {
         method: "POST",
         headers: {
@@ -74,13 +83,14 @@ const NewSurveys = () => {
           b: b,
           c: c,
           d: d,
-          quizzesId: 12,
+          quizzesId: quizId,
         }),
       });
     } catch (error) {
       console.error("Error adding new question entry:", error);
       alert(error);
     }
+    window.location.reload();
   };
 
   const handleQuizInput = async (e) => {
@@ -100,6 +110,7 @@ const NewSurveys = () => {
       console.error("Error adding new quiz entry:", error);
       alert(error);
     }
+    window.location.reload();
   };
 
   const handleTitleChange = (e) => {
@@ -116,14 +127,28 @@ const NewSurveys = () => {
       Title <input type="text" key="title" onChange={handleTitleChange} />
       Time <input type="number" key="time" onChange={handleTimeChange} />
       <button className="btn" onClick={handleQuizInput}>
-        Save title and time
+        Create New Survey
       </button>
       <br></br>
       <br></br>
       <br></br>
       <h1>Add Question to Survey</h1>
       <div className="settings-container">
-        Question Type{" "}
+        Select Quiz <br></br>
+        <select
+          onChange={(e) => {
+            setQuizId(Number(e.target.value));
+          }}
+        >
+          <option></option>
+          {quizzes &&
+            quizzes.map((element) => {
+              return <option value={element.id}>{element.title}</option>;
+            })}
+        </select>
+        <br /> <br />
+        Question Type
+        <br></br>
         <select
           onChange={(e) => {
             setType(e.target.value);
@@ -136,44 +161,52 @@ const NewSurveys = () => {
         </select>
         <br />
         <br />
+        <br />
         Question{" "}
         <input
           onChange={(e) => {
             setQuestion(e.target.value);
           }}
         />
-        Answer: Enter "T" or "F" for True/False. Enter "A", "B", "C", or "D" for
-        multiple choice. Enter correct choices in alphabetical order for
-        multiple answer. For example, enter "BD" if b and d are the correct
-        answers. Enter the phrase for short answer.{" "}
+        <br />
+        <br />
+        Answer: <br />
+        Enter "T" or "F" for True/False. <br></br>
+        Enter the capital letter for multiple choice. (i.e. "A").<br></br>
+        Enter the capital letter(s) in alphabetical order (i.e. "BD") for
+        multiple answer.
+        <br></br>
+        Enter the phrase for short answer.
         <input
           onChange={(e) => {
             setAnswer(e.target.value);
           }}
         />
-        a - Only fill this out for multiple choice and multiple answer
-        questions.{" "}
+        <br></br>
+        <br></br>
+        <br></br>
+        Only fill this out for multiple choice/multiple answer questions:{" "}
+        <br></br>
+        <br></br>
+        A
         <input
           onChange={(e) => {
             setA(e.target.value);
           }}
         />
-        b - Only fill this out for multiple choice and multiple answer
-        questions.{" "}
+        B
         <input
           onChange={(e) => {
             setB(e.target.value);
           }}
         />
-        c - Only fill this out for multiple choice and multiple answer
-        questions.{" "}
+        C
         <input
           onChange={(e) => {
             setC(e.target.value);
           }}
         />
-        d - Only fill this out for multiple choice and multiple answer
-        questions.{" "}
+        D
         <input
           onChange={(e) => {
             setD(e.target.value);
