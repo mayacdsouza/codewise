@@ -10,15 +10,15 @@ CREATE OR REPLACE TABLE Employers (
   email VARCHAR(45) NOT NULL,
   company VARCHAR(45) NOT NULL,
   password_hash VARCHAR(45) NOT NULL,
-  PRIMARY KEY (id))
+  PRIMARY KEY (id));
 
-CREATE TABLE Candidates (
+CREATE OR REPLACE TABLE Candidates (
   id INT NOT NULL UNIQUE AUTO_INCREMENT,
   name VARCHAR(45) NOT NULL,
   email VARCHAR(45) NOT NULL,
-  PRIMARY KEY (id))
+  PRIMARY KEY (id));
 
-CREATE TABLE Quizzes (
+CREATE OR REPLACE TABLE Quizzes (
   id INT NOT NULL UNIQUE AUTO_INCREMENT,
   title VARCHAR(45) NOT NULL,
   time INT NOT NULL,
@@ -26,9 +26,9 @@ CREATE TABLE Quizzes (
   PRIMARY KEY (id),
   FOREIGN KEY (Employers_id) REFERENCES Employers (id)
     ON DELETE CASCADE
-)
+);
 
-CREATE TABLE Questions (
+CREATE OR REPLACE TABLE Questions (
   id INT NOT NULL UNIQUE AUTO_INCREMENT,
   type VARCHAR(45) NOT NULL,
   question VARCHAR(200) NOT NULL,
@@ -41,9 +41,9 @@ CREATE TABLE Questions (
   PRIMARY KEY (id),
   FOREIGN KEY (Quizzes_id) REFERENCES Quizzes(id)
     ON DELETE CASCADE
-)
+);
 
-CREATE TABLE Results (
+CREATE OR REPLACE TABLE Results (
   id INT NOT NULL UNIQUE AUTO_INCREMENT,
   grade DECIMAL,
   Quizzes_id INT NOT NULL,
@@ -56,10 +56,9 @@ CREATE TABLE Results (
   FOREIGN KEY (Employers_id) REFERENCES Employers(id)
     ON DELETE CASCADE,
   FOREIGN KEY (Candidates_id) REFERENCES Candidates(id)
-    ON DELETE CASCADE)
+    ON DELETE CASCADE);
 
     -- -----------------------------------------------------
 -- Reset default settings
 -- -----------------------------------------------------
 SET FOREIGN_KEY_CHECKS=1;
-COMMIT;
