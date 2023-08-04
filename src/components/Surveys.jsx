@@ -109,11 +109,10 @@ const Surveys = () => {
       console.log("Candidate email: " + selectedCandidate.email);
 
       // Generate the mailto link
-      const mailtoLink = `mailto:${
-        selectedCandidate.email
-      }?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-        body
-      )}`;
+      const mailtoLink = `mailto:${selectedCandidate.email
+        }?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+          body
+        )}`;
 
       // Send a POST request to add new result entry
       const response = await fetch("http://localhost:3306/add_result", {
@@ -174,39 +173,47 @@ const Surveys = () => {
         );
         const data = await response.json();
         setQuizzes(data);
-        setTableEntries(
-          data?.map(function (element) {
-            return (
-              <tr key={element.id} employee-id={element.Employers_id}>
-                <td>{element.title}</td>
-                <td>
-                  <select name="candidates" id="candidates">
-                    {options}
-                  </select>
-                </td>
-                <td>
-                  <button
-                    className="btn"
-                    onClick={() =>
-                      handleSendToCandidate(
-                        element.id,
-                        document.getElementById("candidates").value
-                      )
-                    }
-                  >
-                    Send to candidate
-                  </button>
-                </td>
-              </tr>
-            );
-          })
-        );
       } catch (error) {
         console.error("Error fetching quizzes:", error);
       }
     };
     fetchQuizzes();
-  }, [quizzes, employerId]);
+  }, [employerId]);
+
+  useEffect(() => {
+    // Check if quizzes and candidates are loaded
+    if (!quizzes || !options) {
+      return;
+    }
+  
+    setTableEntries(
+      quizzes?.map(function (element) {
+        return (
+          <tr key={`quiz-${element.id}`} employee-id={element.Employers_id}>
+            <td>{element.title}</td>
+            <td>
+              <select name="candidates" id={`candidates-${element.id}`}>
+                {options}
+              </select>
+            </td>
+            <td>
+              <button
+                className="btn"
+                onClick={() =>
+                  handleSendToCandidate(
+                    element.id,
+                    document.getElementById(`candidates-${element.id}`).value
+                  )
+                }
+              >
+                Send to candidate
+              </button>
+            </td>
+          </tr>
+        );
+      })
+    );
+  }, [quizzes, options]);
 
   return (
     <div className="settings-container">
