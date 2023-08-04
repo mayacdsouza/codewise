@@ -14,11 +14,6 @@ body {
   margin: -20px 0 50px;
 }
 
-h1 {
-  font-weight: bold;
-  margin: 0;
-}
-
 h2 {
   text-align: center;
   font-weight: bold;
@@ -264,12 +259,11 @@ footer a {
 .profile-container {
   background-color: #f6f5f7;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
   font-family: "Montserrat", sans-serif;
   height: 100vh;
-  margin: -20px 0 50px;
+  margin: 130px 0 50px;
 }
 
 h1 {
@@ -325,11 +319,6 @@ h1 {
 
 .dashboard-button:focus {
   outline: none;
-}
-
-h1 {
-  font-weight: bold;
-  margin: 0;
 }
 
 h2 {
@@ -543,95 +532,4 @@ input {
   margin: 0 5px;
   height: 40px;
   width: 40px;
-}
-
-footer {
-  background-color: #222;
-  color: #fff;
-  font-size: 14px;
-  bottom: 0;
-  position: fixed;
-  left: 0;
-  right: 0;
-  text-align: center;
-  z-index: 999;
-}
-
-footer p {
-  margin: 10px 0;
-}
-
-footer i {
-  color: red;
-}
-
-footer a {
-  color: #3c97bf;
-  text-decoration: none;
-}
-
-.profile-container {
-  background-color: #f6f5f7;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  font-family: "Montserrat", sans-serif;
-  height: 100vh;
-  margin: -20px 0 50px;
-}
-
-h1 {
-  font-weight: bold;
-  margin: 0;
-}
-
-.dashboard {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-
-.dashboard-item {
-  width: 300px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  padding: 20px;
-  margin: 20px;
-  text-align: center;
-}
-
-.dashboard-item h3 {
-  font-weight: bold;
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.dashboard-item p {
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-.dashboard-button {
-  border-radius: 20px;
-  border: 1px solid #ff4b2b;
-  background-color: #ff4b2b;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 12px 45px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: transform 80ms ease-in;
-}
-
-.dashboard-button:active {
-  transform: scale(0.95);
-}
-
-.dashboard-button:focus {
-  outline: none;
 }

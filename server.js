@@ -520,14 +520,6 @@ app.get("/select_links", function (req, res) {
   });
 });
 
-// Get for employer id for custom results routes
-// app.get("/select_employer_id", function (req, res) {
-//   let sql = `SELECT id FROM Employers`;
-//   db.query(sql, [], (err, result) => {
-//     res.send(result);
-//   });
-// });
-
 // Get for displaying quiz title on quiz page
 app.get("/results/:quizId", (req, res) => {
   const quizId = req.params.quizId;
