@@ -40,7 +40,7 @@ const Results = () => {
       setCandidateOptions(
         data?.map(function (element) {
           return (
-            <option key={element.id} value={element.name}>
+            <option key={`candidate-${element.id}`} value={element.name}>
               {element.name}
             </option>
           );
@@ -94,7 +94,7 @@ const Results = () => {
         setQuizOptions(
           data?.map(function (element) {
             return (
-              <option key={element.id} value={element.title}>
+              <option key={`quiz-${element.id}`} value={element.title}>
                 {element.title}
               </option>
             );
@@ -128,7 +128,7 @@ const Results = () => {
               const response = await fetch(`http://localhost:3306/get_quiz_results/${quizId}`);
               const data = await response.json();
               // Filter out results with NULL or '0' grade
-              const filteredResults = data.filter((result) => result.grade !== null && result.grade !== '0');
+              const filteredResults = data.filter((result) => result.grade !== null && result.grade !== 0);
               setQuizResults(filteredResults);
               console.log("Selected quiz data:", filteredResults);
             }
@@ -159,7 +159,7 @@ const Results = () => {
               const response = await fetch(`http://localhost:3306/get_candidate_results/${candidateId}`);
               const data = await response.json();
               // Filter out results with NULL or '0' grade
-              const filteredResults = data.filter((result) => result.grade !== null && result.grade !== '0');
+              const filteredResults = data.filter((result) => result.grade !== null && result.grade !== 0);
               setCandidateResults(filteredResults);
               console.log("Selected candidate data:", filteredResults);
             }
@@ -203,8 +203,8 @@ const Results = () => {
                 </tr>
               </thead>
               <tbody>
-                {quizResults.map((result) => (
-                  <tr key={result.name}>
+                {quizResults.map((result, index) => (
+                  <tr key={`quiz-result-${result.name}-${index}`}>
                     <td>{result.name}</td>
                     <td>{result.grade}</td>
                   </tr>
@@ -239,8 +239,8 @@ const Results = () => {
                 </tr>
               </thead>
               <tbody>
-                {candidateResults.map((result) => (
-                  <tr key={result.title}>
+                {candidateResults.map((result, index) => (
+                  <tr key={`candidate-result-${result.title}-${index}`}>
                     <td>{result.title}</td>
                     <td>{result.grade}</td>
                   </tr>
