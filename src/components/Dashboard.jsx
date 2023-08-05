@@ -3,9 +3,9 @@ This file represents the Dashboard component, which is responsible for rendering
 It includes options to manage surveys, view results, and customize profile settings.
 */
 
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../App.css';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../App.css";
 
 /*
 The Dashboard component is a functional component that renders the user dashboard.
@@ -16,11 +16,11 @@ const Dashboard = () => {
   const [employerName, setEmployerName] = useState("");
 
   useEffect(() => {
-    const user = sessionStorage.getItem('loggedInUser');
+    const user = sessionStorage.getItem("loggedInUser");
     if (!user) {
       // Redirect the user to the login page if no valid user data exists
-      alert("Please log in to access your Dashboard.")
-      navigate('/');
+      alert("Please log in to access your Dashboard.");
+      navigate("/");
     } else {
       fetchEmployerName();
     }
@@ -28,9 +28,11 @@ const Dashboard = () => {
 
   const fetchEmployerName = async () => {
     try {
-      const employerEmailData = JSON.parse(sessionStorage.getItem('loggedInUser'));
+      const employerEmailData = JSON.parse(
+        sessionStorage.getItem("loggedInUser")
+      );
       const employerEmail = employerEmailData?.email?.[0];
-      
+
       if (employerEmail) {
         const employerResponse = await fetch(
           `http://localhost:3306/get_employer_name/${employerEmail}`
@@ -49,13 +51,13 @@ const Dashboard = () => {
   };
 
   const settings = () => {
-    navigate('/settings');
+    navigate("/settings");
   };
   const surveys = () => {
-    navigate('/surveys');
+    navigate("/surveys");
   };
   const results = () => {
-    navigate('/results');
+    navigate("/results");
   };
 
   /**
@@ -64,24 +66,30 @@ const Dashboard = () => {
   */
   return (
     <div className="profile-container">
-      {sessionStorage.getItem('loggedInUser') ? (
+      {sessionStorage.getItem("loggedInUser") ? (
         <>
           <h1>Welcome to Your Dashboard, {employerName}!</h1>
           <div className="dashboard">
             <div className="dashboard-item">
               <h3>Surveys</h3>
               <p>Manage your surveys</p>
-              <button className="dashboard-button" onClick={surveys}>Go to Surveys</button>
+              <button className="dashboard-button" onClick={surveys}>
+                Go to Surveys
+              </button>
             </div>
             <div className="dashboard-item">
               <h3>Results</h3>
               <p>View survey results</p>
-              <button className="dashboard-button" onClick={results}>View Results</button>
+              <button className="dashboard-button" onClick={results}>
+                View Results
+              </button>
             </div>
             <div className="dashboard-item">
               <h3>Settings</h3>
               <p>Customize your profile</p>
-              <button className="dashboard-button" onClick={settings}>Go to Settings</button>
+              <button className="dashboard-button" onClick={settings}>
+                Go to Settings
+              </button>
             </div>
           </div>
         </>
@@ -93,5 +101,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-

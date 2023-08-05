@@ -1,3 +1,0 @@
-endpoint: codewise-instance-1.cgwvxlkikwau.us-east-2.rds.amazonaws.com
-port: 3306
-username and password also needed (stored privately)

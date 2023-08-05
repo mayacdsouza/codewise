@@ -52,22 +52,22 @@ function Login() {
     return JSON.parse(userData);
   };
 
-  /*
-  Function to check if the user is already logged in.
-  It should be called when the Login component mounts.
-  */
-  const checkLoggedIn = () => {
-    const user = getLoggedInUser();
-    if (user) {
-      // Perform any other actions you need when the user is logged in
-      navigate("/dashboard");
-    }
-  };
-
   // Check if the user is already logged in when the component mounts
   useEffect(() => {
+    /*
+    Function to check if the user is already logged in.
+    It should be called when the Login component mounts.
+    */
+    const checkLoggedIn = () => {
+      const user = getLoggedInUser();
+      if (user) {
+        // Perform any other actions you need when the user is logged in
+        navigate("/dashboard");
+      }
+    };
+
     checkLoggedIn();
-  }, []);
+  }, [navigate]);
 
   /*
   The useEffect hook is used to add event listeners to handle sign up and sign in button clicks.
@@ -236,7 +236,7 @@ function Login() {
                 <span className="text-danger">{err.password}</span>
               )}
             </Fragment>
-            <input type="hidden" id="formType" value="signup"></input>
+            <input type="hidden" id="formType1" value="signup"></input>
             <button id="signupbutton" type="submit">
               Sign Up
             </button>
@@ -276,7 +276,7 @@ function Login() {
                 <span className="text-danger">{errors.password}</span>
               )}
             </Fragment>
-            <input type="hidden" id="formType" value="login"></input>
+            <input type="hidden" id="formType2" value="login"></input>
             <button id="loginbutton" type="submit">
               Login
             </button>

@@ -67,10 +67,10 @@ function AppContent() {
         <Route path="/newsurveys" element={<NewSurveys />} key="e" />
         <Route path="/results" element={<Results />} key="f" />
 
-        {quizzes.map((quiz, key) => (
+        {quizzes.map((quiz) => (
           <Route
             path={"/quiz/" + quiz}
-            element={<Quiz value={quiz} key={key} />}
+            element={<Quiz value={quiz} key={quiz} />}
           />
         ))}
       </Routes>

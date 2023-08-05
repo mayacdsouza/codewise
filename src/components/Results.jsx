@@ -1,28 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import '../styles/Results.css';
+import React, { useState, useEffect } from "react";
+import "../styles/Results.css";
 import { useNavigate } from "react-router-dom";
-
 
 const Results = () => {
   const [selectedQuiz, setSelectedQuiz] = useState(null);
-  const [selectedQuizId, setSelectedQuizId] = useState(null);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
-  const [quizzes, setQuizzes] = useState([]);
   const [employerId, setEmployerId] = useState("");
-  const [candidates, setCandidates] = useState([]);
   const [candidateOptions, setCandidateOptions] = useState([]);
   const [quizOptions, setQuizOptions] = useState([]);
   const [quizResults, setQuizResults] = useState([]);
   const [candidateResults, setCandidateResults] = useState([]);
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    const user = sessionStorage.getItem('loggedInUser');
+    const user = sessionStorage.getItem("loggedInUser");
     if (!user) {
       // Redirect the user to the login page if no valid user data exists
-      alert("Please log in to access your results.")
-      navigate('/');
+      alert("Please log in to access your results.");
+      navigate("/");
     }
   }, [navigate]);
 
@@ -32,11 +27,13 @@ const Results = () => {
     const signal = controller.signal;
 
     async function fetchCandidates() {
-      const response = await fetch('http://localhost:3306/select_candidates_results', {
-        signal,
-      });
+      const response = await fetch(
+        "http://localhost:3306/select_candidates_results",
+        {
+          signal,
+        }
+      );
       const data = await response.json();
-      setCandidates(data);
       setCandidateOptions(
         data?.map(function (element) {
           return (
@@ -56,10 +53,14 @@ const Results = () => {
   // Fetch employerId with employerEmail
   const fetchEmployerId = async () => {
     try {
-      const employerEmailData = JSON.parse(sessionStorage.getItem('loggedInUser'));
+      const employerEmailData = JSON.parse(
+        sessionStorage.getItem("loggedInUser")
+      );
       const employerEmail = employerEmailData?.email?.[0];
       if (employerEmail) {
-        const employerResponse = await fetch(`http://localhost:3306/get_employer_id/${employerEmail}`);
+        const employerResponse = await fetch(
+          `http://localhost:3306/get_employer_id/${employerEmail}`
+        );
 
         if (!employerResponse.ok) {
           throw new Error("Failed to fetch employer ID.");
@@ -86,11 +87,13 @@ const Results = () => {
 
     async function fetchQuizzes() {
       try {
-        const response = await fetch(`http://localhost:3306/select_quizzes_results/${employerId}`, {
-          signal,
-        });
+        const response = await fetch(
+          `http://localhost:3306/select_quizzes_results/${employerId}`,
+          {
+            signal,
+          }
+        );
         const data = await response.json();
-        setQuizzes(data);
         setQuizOptions(
           data?.map(function (element) {
             return (
@@ -118,17 +121,23 @@ const Results = () => {
     if (selectedQuiz) {
       async function fetchQuizId() {
         try {
-          const response = await fetch(`http://localhost:3306/get_quiz_id/${selectedQuiz}`);
+          const response = await fetch(
+            `http://localhost:3306/get_quiz_id/${selectedQuiz}`
+          );
           const data = await response.json();
           if (data.length > 0) {
             const quizId = data[0].id;
             console.log("Quiz ID:", quizId);
 
             async function fetchQuizResults() {
-              const response = await fetch(`http://localhost:3306/get_quiz_results/${quizId}`);
+              const response = await fetch(
+                `http://localhost:3306/get_quiz_results/${quizId}`
+              );
               const data = await response.json();
               // Filter out results with NULL or '0' grade
-              const filteredResults = data.filter((result) => result.grade !== null && result.grade !== 0);
+              const filteredResults = data.filter(
+                (result) => result.grade !== null && result.grade !== 0
+              );
               setQuizResults(filteredResults);
               console.log("Selected quiz data:", filteredResults);
             }
@@ -149,17 +158,23 @@ const Results = () => {
     if (selectedCandidate) {
       async function fetchCandidateId() {
         try {
-          const response = await fetch(`http://localhost:3306/get_candidate_id/${selectedCandidate}`);
+          const response = await fetch(
+            `http://localhost:3306/get_candidate_id/${selectedCandidate}`
+          );
           const data = await response.json();
           if (data.length > 0) {
             const candidateId = data[0].id;
             console.log("Candidate ID:", candidateId);
 
             async function fetchCandidateResults() {
-              const response = await fetch(`http://localhost:3306/get_candidate_results/${candidateId}`);
+              const response = await fetch(
+                `http://localhost:3306/get_candidate_results/${candidateId}`
+              );
               const data = await response.json();
               // Filter out results with NULL or '0' grade
-              const filteredResults = data.filter((result) => result.grade !== null && result.grade !== 0);
+              const filteredResults = data.filter(
+                (result) => result.grade !== null && result.grade !== 0
+              );
               setCandidateResults(filteredResults);
               console.log("Selected candidate data:", filteredResults);
             }
@@ -185,7 +200,7 @@ const Results = () => {
         <select
           id="quizDropdown"
           onChange={(e) => setSelectedQuiz(e.target.value)}
-          value={selectedQuiz || ''}
+          value={selectedQuiz || ""}
         >
           <option value="">Select Quiz</option>
           {quizOptions}
@@ -221,7 +236,7 @@ const Results = () => {
         <select
           id="candidateDropdown"
           onChange={(e) => setSelectedCandidate(e.target.value)}
-          value={selectedCandidate || ''}
+          value={selectedCandidate || ""}
         >
           <option value="">Select Candidiate</option>
           {candidateOptions}

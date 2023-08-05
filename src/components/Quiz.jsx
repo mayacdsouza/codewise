@@ -1,112 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Surveys.css";
-
-const QuizQuestion = ({
-  question,
-  type,
-  answer,
-  a,
-  b,
-  c,
-  d,
-  questionNumber,
-  correctObject,
-  setCorrectObject,
-}) => {
-  const [A, setA] = useState("");
-  const [B, setB] = useState("");
-  const [C, setC] = useState("");
-  const [D, setD] = useState("");
-
-  const handleQuestion = (e) => {
-    setCorrectObject((prev) => {
-      return { ...prev, [questionNumber]: e.target.value === answer };
-    });
-  };
-
-  const handleA = (e) => {
-    setA(e.target.checked ? "A" : "");
-
-    setCorrectObject((prev) => {
-      return { ...prev, [questionNumber]: A + B + C + D === answer };
-    });
-  };
-
-  const handleB = (e) => {
-    setB(e.target.checked ? "B" : "");
-
-    setCorrectObject((prev) => {
-      console.log("tes", answer, A + B + C + D);
-      console.log("Correct Object:", correctObject);
-      return { ...prev, [questionNumber]: A + B + C + D === answer };
-    });
-  };
-  const handleC = (e) => {
-    setC(e.target.checked ? "C" : "");
-
-    setCorrectObject((prev) => {
-      return { ...prev, [questionNumber]: A + B + C + D === answer };
-    });
-  };
-  const handleD = (e) => {
-    setD(e.target.checked ? "D" : "");
-
-    setCorrectObject((prev) => {
-      return { ...prev, [questionNumber]: A + B + C + D === answer };
-    });
-  };
-  return (
-    <div>
-      <h3 className="question">{question}</h3>
-      {type === "Short Answer" && (
-        <div>
-          <input onChange={handleQuestion} id="answer" type="text" />
-        </div>
-      )}
-      {type === "True/False" && (
-        <select onChange={handleQuestion} name="answer" id="answer">
-          <option key="true" value="T">
-            True
-          </option>
-          <option key="false" value="F">
-            False
-          </option>
-        </select>
-      )}
-      {type === "Multiple Answer" && (
-        <div className="question-inner">
-          {a} <input onChange={handleA} value="A" type="checkbox" />
-          {b} <input onChange={handleB} type="checkbox" />
-          {c} <input onChange={handleC} type="checkbox" />
-          {d} <input onChange={handleD} type="checkbox" />
-        </div>
-      )}
-      {type === "Multiple Choice" && (
-        <select name="answer" id="answer" onChange={handleQuestion}>
-          <option value="none"></option>
-          <option value="A">{a}</option>
-          <option value="B">{b}</option>
-          <option value="C">{c}</option>
-          <option value="D">{d}</option>
-        </select>
-      )}
-      <br></br>
-      <br></br>
-    </div>
-  );
-};
+import { QuizQuestion } from "./QuizQuestion";
 
 const Quiz = (props) => {
   const [correctObject, setCorrectObject] = useState({});
 
   const [candidateName, setCandidateName] = useState("");
-  const [quizEmployerCandidateData, setQuizEmployerCandidateData] = useState(
-    []
-  );
   const [employerEmail, setEmployerEmail] = useState("");
   const [employerName, setEmployerName] = useState("");
   const [quizTitle, setQuizTitle] = useState("");
-  const [quizId, setQuizId] = useState("");
+  const [quizId, setQuizId] = useState(undefined);
+  const [candidateId, setCandidateId] = useState(undefined);
+  const [employerId, setEmployerId] = useState(undefined);
+  const [resultId, setResultId] = useState(undefined);
   const [isInitialClick, setIsInitialClick] = useState(true);
   const [questions, setQuestions] = useState();
   const [time, setTime] = useState({});
@@ -119,7 +25,7 @@ const Quiz = (props) => {
     }
   };
 
-  // Get result_id, quiz_id, employer_id, candidate_id
+  // // Get result_id, quiz_id, employer_id, candidate_id
   useEffect(() => {
     // Fetch data and set the 'dataFetched' state to true when completed
     const fetchData = async () => {
@@ -131,23 +37,21 @@ const Quiz = (props) => {
         );
         const data = await response.json();
         console.log("Data:", data);
-        setQuizEmployerCandidateData(data);
-        console.log(quizEmployerCandidateData, "quizemployer");
+        setCandidateId(data[0].Candidates_id);
         setQuizId(data[0].Quizzes_id);
-        console.log(quizEmployerCandidateData);
+        setEmployerId(data[0].Employers_id);
+        setResultId(data[0].id);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, []);
+  }, [props.value]);
 
   useEffect(() => {
     const fetchEmployerEmail = async () => {
       try {
-        if (quizEmployerCandidateData && quizEmployerCandidateData.length > 0) {
-          const employerId = quizEmployerCandidateData[0].Employers_id;
-          console.log("Employer ID: " + employerId);
+        if (employerId) {
           const employerResponse = await fetch(
             `http://localhost:3306/get_employer_email/${employerId}`
           );
@@ -169,14 +73,12 @@ const Quiz = (props) => {
       }
     };
     fetchEmployerEmail();
-  }, [quizEmployerCandidateData]);
+  }, [employerId]);
 
   useEffect(() => {
     const fetchCandidateName = async () => {
       try {
-        if (quizEmployerCandidateData && quizEmployerCandidateData.length > 0) {
-          const candidateId = quizEmployerCandidateData[0].Candidates_id;
-          console.log("Candidate ID: " + candidateId);
+        if (candidateId) {
           const candidateResponse = await fetch(
             `http://localhost:3306/get_candidate_name/${candidateId}`
           );
@@ -193,14 +95,12 @@ const Quiz = (props) => {
       }
     };
     fetchCandidateName();
-  }, [quizEmployerCandidateData]);
+  }, [candidateId]);
 
   useEffect(() => {
     const fetchQuizTitle = async () => {
       try {
-        if (quizEmployerCandidateData && quizEmployerCandidateData.length > 0) {
-          const quizId = quizEmployerCandidateData[0].Quizzes_id;
-          console.log("Quiz ID: " + quizId);
+        if (quizId) {
           const quizResponse = await fetch(
             `http://localhost:3306/get_quiz_title/${quizId}`
           );
@@ -217,7 +117,7 @@ const Quiz = (props) => {
       }
     };
     fetchQuizTitle();
-  }, [quizEmployerCandidateData]);
+  }, [quizId]);
 
   const handleQuizSubmit = async () => {
     let questionsCorrect = 0;
@@ -238,7 +138,6 @@ const Quiz = (props) => {
         )}&body=${encodeURIComponent(body)}`;
 
         // Send a PUT request to update result grade
-        const resultId = quizEmployerCandidateData[0].id;
         console.log("Result ID: " + resultId);
 
         const response = await fetch(
@@ -272,14 +171,14 @@ const Quiz = (props) => {
   useEffect(() => {
     const fetchQuizTime = async () => {
       try {
-        if (quizEmployerCandidateData && quizEmployerCandidateData.length > 0) {
-          const quizId = quizEmployerCandidateData[0].Quizzes_id;
+        if (quizId) {
           const quizResponse = await fetch(
             `http://localhost:3306/get_quiz_time/${quizId}`
           );
           const quizData = await quizResponse.json();
           if (quizData && quizData.time) {
-            let hours = quizData.time % 60;
+            console.log(quizData.time);
+            let hours = Math.floor(quizData.time / 60);
             let minutes = quizData.time - 60 * hours;
             let seconds = 0;
             setTime({ hours, minutes, seconds });
@@ -290,24 +189,28 @@ const Quiz = (props) => {
       }
     };
     fetchQuizTime();
-  }, [quizEmployerCandidateData]);
+  }, [quizId]);
 
   useEffect(() => {
     // Fetch quiz results based on the selected quiz
     async function fetchQuizResults(quizId) {
-      const response = await fetch(
-        `http://localhost:3306/get_quiz_title/${quizId}`
-      );
-      const data = await response.json();
-      setQuizTitle(data.title);
+      if (quizId) {
+        const response = await fetch(
+          `http://localhost:3306/get_quiz_title/${quizId}`
+        );
+        const data = await response.json();
+        setQuizTitle(data.title);
+      }
     }
 
     async function fetchQuestionResults(quizId) {
-      const response = await fetch(
-        `http://localhost:3306/get_quiz_questions/${quizId}`
-      );
-      const data = await response.json();
-      setQuestions(data);
+      if (quizId) {
+        const response = await fetch(
+          `http://localhost:3306/get_quiz_questions/${quizId}`
+        );
+        const data = await response.json();
+        setQuestions(data);
+      }
     }
 
     fetchQuizResults(quizId);
@@ -373,6 +276,7 @@ const Quiz = (props) => {
           {questions &&
             questions.map((element, index) => (
               <QuizQuestion
+                key={element.question}
                 questionNumber={index}
                 type={element.type}
                 question={element.question}

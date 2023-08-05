@@ -70,7 +70,7 @@ const NewSurveys = () => {
 
   const handleQuestionInput = async (e) => {
     try {
-      const response = await fetch("http://localhost:3306/add_question", {
+      await fetch("http://localhost:3306/add_question", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +95,7 @@ const NewSurveys = () => {
 
   const handleQuizInput = async (e) => {
     try {
-      const response = await fetch("http://localhost:3306/add_quiz", {
+      await fetch("http://localhost:3306/add_quiz", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -143,7 +143,11 @@ const NewSurveys = () => {
           <option></option>
           {quizzes &&
             quizzes.map((element) => {
-              return <option value={element.id}>{element.title}</option>;
+              return (
+                <option key={element.id} value={element.id}>
+                  {element.title}
+                </option>
+              );
             })}
         </select>
         <br /> <br />
