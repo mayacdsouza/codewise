@@ -36,8 +36,6 @@ export const QuizQuestion = ({
     setB(e.target.checked ? "B" : "");
 
     setCorrectObject((prev) => {
-      console.log("tes", answer, A + B + C + D);
-      console.log("Correct Object:", correctObject);
       return { ...prev, [questionNumber]: A + B + C + D === answer };
     });
   };
@@ -65,6 +63,7 @@ export const QuizQuestion = ({
       )}
       {type === "True/False" && (
         <select onChange={handleQuestion} name="answer" id="answer">
+          <option key="undefined" value="none" />
           <option key="true" value="T">
             True
           </option>

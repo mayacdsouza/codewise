@@ -120,15 +120,18 @@ const Quiz = (props) => {
   }, [quizId]);
 
   const handleQuizSubmit = async () => {
-    let questionsCorrect = 0;
-    Object.values(correctObject).forEach((val) => {
-      if (val) questionsCorrect++;
-    });
-    const totalQuestions = questions.length;
-    setGrade((questionsCorrect / totalQuestions) * 100);
+    const calculateGrade = () => {
+      let questionsCorrect = 0;
+      Object.values(correctObject).forEach((val) => {
+        if (val) questionsCorrect++;
+      });
+      const totalQuestions = questions.length;
+      return (questionsCorrect / totalQuestions) * 100;
+    };
+
+    setGrade(calculateGrade());
 
     try {
-      console.log("eeeee", employerEmail, candidateName, quizTitle);
       if (employerEmail && candidateName && quizTitle) {
         const subject = "Quiz Results";
         const body = `Dear ${employerName},\n\nCandidate ${candidateName} has submitted their ${quizTitle} quiz.\n\n\nBest regards,\nCodewise`;

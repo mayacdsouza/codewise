@@ -11,7 +11,7 @@ const Surveys = () => {
   const [candidates, setCandidates] = useState();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [employerId, setEmployerId] = useState("");
+  const [employerId, setEmployerId] = useState(undefined);
 
   const navigate = useNavigate();
 
@@ -40,8 +40,7 @@ const Surveys = () => {
             const employerData = await employerResponse.json();
 
             if (employerData.length > 0) {
-              const employerId = employerData[0].id;
-              setEmployerId(employerId);
+              setEmployerId(employerData[0].id);
             } else {
               console.log("Employer ID not found.");
             }
@@ -56,7 +55,7 @@ const Surveys = () => {
 
   const handleCandidateInput = async (e) => {
     try {
-      const response = await fetch("http://localhost:3306/add_candidate", {
+      await fetch("http://localhost:3306/add_candidate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,75 +70,6 @@ const Surveys = () => {
     } catch (error) {
       console.error("Error adding new result entry:", error);
       alert(error);
-    }
-  };
-
-  const handleSendToCandidate = async (selectedSurvey, selectedCandidates) => {
-    try {
-      // Check if quizzes and candidates are loaded
-      if (!quizzes) {
-        console.error("Quizzes data not loaded.");
-        return;
-      }
-      if (!candidates) {
-        console.error("Candidates data not loaded.");
-        return;
-      }
-      // Find the selected quiz in the quizzes array based on the selectedSurvey ID
-      const selectedQuiz = quizzes.find((quiz) => quiz.id === selectedSurvey);
-
-      // Find the selected candidate in the candidate array based on the selectedCandidates ID
-      const selectedCandidate = candidates.find(
-        (candidate) => candidate.name === selectedCandidates
-      );
-      // Check if selectedCandidate is valid
-      if (!selectedCandidate) {
-        console.error("Selected candidate not found.");
-        return;
-      }
-
-      // Todo: Link to specified quiz page ON WEBSITE HOST
-      const keyLink = Math.random().toString(36).substring(7);
-
-      // Prepare the email subject and body
-      const subject = "Your Survey Link";
-      const body = `Dear ${selectedCandidate.name},\n\nPlease click the following link to access your survey: http://localhost:3000/quiz/${keyLink}\n\nBest regards,\nCodewise`;
-
-      console.log("Candidate name: " + selectedCandidate.name);
-      console.log("Candidate email: " + selectedCandidate.email);
-
-      // Generate the mailto link
-      const mailtoLink = `mailto:${selectedCandidate.email
-        }?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-          body
-        )}`;
-
-      // Send a POST request to add new result entry
-      const response = await fetch("http://localhost:3306/add_result", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          grade: 0,
-          quiz_id: selectedQuiz.id,
-          employer_id: selectedQuiz.Employers_id,
-          candidate_id: selectedCandidate.id,
-          link: keyLink,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to add new result entry.");
-      }
-      const data = await response.json();
-      console.log("New result entry:", data);
-      alert("Result entry added successfully.");
-      // Open the default email client with the pre-filled email fields
-      window.location.href = mailtoLink;
-    } catch (error) {
-      console.error("Error adding new result entry:", error);
-      alert("Error adding new result entry.");
     }
   };
 
@@ -167,25 +97,99 @@ const Surveys = () => {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:3306/select_quizzes/${employerId}`
-        );
-        const data = await response.json();
-        setQuizzes(data);
-      } catch (error) {
-        console.error("Error fetching quizzes:", error);
+      if (employerId) {
+        try {
+          const response = await fetch(
+            `http://localhost:3306/select_quizzes/${employerId}`
+          );
+          const data = await response.json();
+          setQuizzes(data);
+        } catch (error) {
+          console.error("Error fetching quizzes:", error);
+        }
       }
     };
     fetchQuizzes();
   }, [employerId]);
 
   useEffect(() => {
+    const handleSendToCandidate = async (
+      selectedSurvey,
+      selectedCandidates
+    ) => {
+      try {
+        // Check if quizzes and candidates are loaded
+        if (!quizzes) {
+          console.error("Quizzes data not loaded.");
+          return;
+        }
+        if (!candidates) {
+          console.error("Candidates data not loaded.");
+          return;
+        }
+        // Find the selected quiz in the quizzes array based on the selectedSurvey ID
+        const selectedQuiz = quizzes.find((quiz) => quiz.id === selectedSurvey);
+
+        // Find the selected candidate in the candidate array based on the selectedCandidates ID
+        const selectedCandidate = candidates.find(
+          (candidate) => candidate.name === selectedCandidates
+        );
+        // Check if selectedCandidate is valid
+        if (!selectedCandidate) {
+          console.error("Selected candidate not found.");
+          return;
+        }
+
+        // Todo: Link to specified quiz page ON WEBSITE HOST
+        const keyLink = Math.random().toString(36).substring(7);
+
+        // Prepare the email subject and body
+        const subject = "Your Survey Link";
+        const body = `Dear ${selectedCandidate.name},\n\nPlease click the following link to access your survey: http://localhost:3000/quiz/${keyLink}\n\nBest regards,\nCodewise`;
+
+        console.log("Candidate name: " + selectedCandidate.name);
+        console.log("Candidate email: " + selectedCandidate.email);
+
+        // Generate the mailto link
+        const mailtoLink = `mailto:${
+          selectedCandidate.email
+        }?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+          body
+        )}`;
+
+        // Send a POST request to add new result entry
+        const response = await fetch("http://localhost:3306/add_result", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            grade: 0,
+            quiz_id: selectedQuiz.id,
+            employer_id: selectedQuiz.Employers_id,
+            candidate_id: selectedCandidate.id,
+            link: keyLink,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to add new result entry.");
+        }
+        const data = await response.json();
+        console.log("New result entry:", data);
+        alert("Result entry added successfully.");
+        // Open the default email client with the pre-filled email fields
+        window.location.href = mailtoLink;
+      } catch (error) {
+        console.error("Error adding new result entry:", error);
+        alert("Error adding new result entry.");
+      }
+    };
     // Check if quizzes and candidates are loaded
     if (!quizzes || !options) {
       return;
     }
-  
+
     setTableEntries(
       quizzes?.map(function (element) {
         return (
@@ -213,7 +217,7 @@ const Surveys = () => {
         );
       })
     );
-  }, [quizzes, options]);
+  }, [quizzes, options, candidates]);
 
   return (
     <div className="settings-container">

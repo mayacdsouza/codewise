@@ -23,15 +23,9 @@ const Results = () => {
 
   // Displays list of candidates in a drop-down menu
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
     async function fetchCandidates() {
       const response = await fetch(
-        "http://localhost:3306/select_candidates_results",
-        {
-          signal,
-        }
+        "http://localhost:3306/select_candidates_results"
       );
       const data = await response.json();
       setCandidateOptions(
@@ -43,77 +37,68 @@ const Results = () => {
           );
         })
       );
-      return () => {
-        controller.abort();
-      };
     }
     fetchCandidates();
   }, []);
 
-  // Fetch employerId with employerEmail
-  const fetchEmployerId = async () => {
-    try {
-      const employerEmailData = JSON.parse(
-        sessionStorage.getItem("loggedInUser")
-      );
-      const employerEmail = employerEmailData?.email?.[0];
-      if (employerEmail) {
-        const employerResponse = await fetch(
-          `http://localhost:3306/get_employer_id/${employerEmail}`
+  useEffect(() => {
+    // Fetch employerId with employerEmail
+    const fetchEmployerId = async () => {
+      try {
+        const employerEmailData = JSON.parse(
+          sessionStorage.getItem("loggedInUser")
         );
+        const employerEmail = employerEmailData?.email?.[0];
+        if (employerEmail) {
+          const employerResponse = await fetch(
+            `http://localhost:3306/get_employer_id/${employerEmail}`
+          );
 
-        if (!employerResponse.ok) {
-          throw new Error("Failed to fetch employer ID.");
+          if (!employerResponse.ok) {
+            throw new Error("Failed to fetch employer ID.");
+          }
+
+          const employerData = await employerResponse.json();
+
+          if (employerData.length > 0) {
+            const employerId = employerData[0].id;
+            setEmployerId(employerId);
+          } else {
+            console.log("Employer ID not found.");
+          }
         }
-
-        const employerData = await employerResponse.json();
-
-        if (employerData.length > 0) {
-          const employerId = employerData[0].id;
-          setEmployerId(employerId);
-        } else {
-          console.log("Employer ID not found.");
-        }
+      } catch (error) {
+        console.error("Error fetching employer ID:", error);
       }
-    } catch (error) {
-      console.error("Error fetching employer ID:", error);
-    }
-  };
+    };
+    fetchEmployerId();
+  }, []);
 
   // Displays list of quizzes in a drop-down menu
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
     async function fetchQuizzes() {
-      try {
-        const response = await fetch(
-          `http://localhost:3306/select_quizzes_results/${employerId}`,
-          {
-            signal,
-          }
-        );
-        const data = await response.json();
-        setQuizOptions(
-          data?.map(function (element) {
-            return (
-              <option key={`quiz-${element.id}`} value={element.title}>
-                {element.title}
-              </option>
-            );
-          })
-        );
-      } catch (error) {
-        console.error("Error fetching quizzes:", error);
+      if (employerId) {
+        try {
+          const response = await fetch(
+            `http://localhost:3306/select_quizzes_results/${employerId}`
+          );
+          const data = await response.json();
+          setQuizOptions(
+            data?.map(function (element) {
+              return (
+                <option key={`quiz-${element.id}`} value={element.title}>
+                  {element.title}
+                </option>
+              );
+            })
+          );
+        } catch (error) {
+          console.error("Error fetching quizzes:", error);
+        }
       }
     }
 
-    // Fetch employerId with employerEmail and then fetch quizzes
-    fetchEmployerId().then(() => fetchQuizzes());
-
-    return () => {
-      controller.abort();
-    };
+    fetchQuizzes();
   }, [employerId]);
 
   // Fetch quiz results based on the selected quiz

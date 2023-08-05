@@ -69,6 +69,7 @@ function AppContent() {
 
         {quizzes.map((quiz) => (
           <Route
+            key={"/quiz/" + quiz}
             path={"/quiz/" + quiz}
             element={<Quiz value={quiz} key={quiz} />}
           />
