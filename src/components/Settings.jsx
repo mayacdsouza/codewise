@@ -80,7 +80,7 @@ const Settings = () => {
       return;
     }
     // Send a POST request to update the password
-    fetch("flip1.engr.oregonstate.edu:3378/settings", {
+    fetch("http://flip1.engr.oregonstate.edu:3378/settings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -119,7 +119,7 @@ const Settings = () => {
       return;
     }
     // Send a POST request to delete the account
-    fetch("flip1.engr.oregonstate.edu:3378/settings", {
+    fetch("http://flip1.engr.oregonstate.edu:3378/settings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -30,7 +30,7 @@ const Surveys = () => {
           const employerEmail = employerEmailData?.email?.[0];
           if (employerEmail) {
             const employerResponse = await fetch(
-              `flip1.engr.oregonstate.edu:3378/get_employer_id/${employerEmail}`
+              `http://flip1.engr.oregonstate.edu:3378/get_employer_id/${employerEmail}`
             );
 
             if (!employerResponse.ok) {
@@ -55,7 +55,7 @@ const Surveys = () => {
 
   const handleCandidateInput = async (e) => {
     try {
-      await fetch("flip1.engr.oregonstate.edu:3378/add_candidate", {
+      await fetch("http://flip1.engr.oregonstate.edu:3378/add_candidate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const Surveys = () => {
     const fetchCandidates = async () => {
       try {
         const response = await fetch(
-          "flip1.engr.oregonstate.edu:3378/select_candidates"
+          "http://flip1.engr.oregonstate.edu:3378/select_candidates"
         );
         const data = await response.json();
         setCandidates(data);
@@ -102,7 +102,7 @@ const Surveys = () => {
       if (employerId) {
         try {
           const response = await fetch(
-            `flip1.engr.oregonstate.edu:3378/select_quizzes/${employerId}`
+            `http://flip1.engr.oregonstate.edu:3378/select_quizzes/${employerId}`
           );
           const data = await response.json();
           setQuizzes(data);
@@ -161,7 +161,7 @@ const Surveys = () => {
 
         // Send a POST request to add new result entry
         const response = await fetch(
-          "flip1.engr.oregonstate.edu:3378/add_result",
+          "http://flip1.engr.oregonstate.edu:3378/add_result",
           {
             method: "POST",
             headers: {

@@ -25,7 +25,7 @@ const Results = () => {
   useEffect(() => {
     async function fetchCandidates() {
       const response = await fetch(
-        "flip1.engr.oregonstate.edu:3378/select_candidates_results"
+        "http://flip1.engr.oregonstate.edu:3378/select_candidates_results"
       );
       const data = await response.json();
       setCandidateOptions(
@@ -51,7 +51,7 @@ const Results = () => {
         const employerEmail = employerEmailData?.email?.[0];
         if (employerEmail) {
           const employerResponse = await fetch(
-            `flip1.engr.oregonstate.edu:3378/get_employer_id/${employerEmail}`
+            `http://flip1.engr.oregonstate.edu:3378/get_employer_id/${employerEmail}`
           );
 
           if (!employerResponse.ok) {
@@ -80,7 +80,7 @@ const Results = () => {
       if (employerId) {
         try {
           const response = await fetch(
-            `flip1.engr.oregonstate.edu:3378/select_quizzes_results/${employerId}`
+            `http://flip1.engr.oregonstate.edu:3378/select_quizzes_results/${employerId}`
           );
           const data = await response.json();
           setQuizOptions(
@@ -107,7 +107,7 @@ const Results = () => {
       async function fetchQuizId() {
         try {
           const response = await fetch(
-            `flip1.engr.oregonstate.edu:3378/get_quiz_id/${selectedQuiz}`
+            `http://flip1.engr.oregonstate.edu:3378/get_quiz_id/${selectedQuiz}`
           );
           const data = await response.json();
           if (data.length > 0) {
@@ -116,7 +116,7 @@ const Results = () => {
 
             async function fetchQuizResults() {
               const response = await fetch(
-                `flip1.engr.oregonstate.edu:3378/get_quiz_results/${quizId}`
+                `http://flip1.engr.oregonstate.edu:3378/get_quiz_results/${quizId}`
               );
               const data = await response.json();
               // Filter out results with NULL or '0' grade
@@ -144,7 +144,7 @@ const Results = () => {
       async function fetchCandidateId() {
         try {
           const response = await fetch(
-            `flip1.engr.oregonstate.edu:3378/get_candidate_id/${selectedCandidate}`
+            `http://flip1.engr.oregonstate.edu:3378/get_candidate_id/${selectedCandidate}`
           );
           const data = await response.json();
           if (data.length > 0) {
@@ -153,7 +153,7 @@ const Results = () => {
 
             async function fetchCandidateResults() {
               const response = await fetch(
-                `flip1.engr.oregonstate.edu:3378/get_candidate_results/${candidateId}`
+                `http://flip1.engr.oregonstate.edu:3378/get_candidate_results/${candidateId}`
               );
               const data = await response.json();
               // Filter out results with NULL or '0' grade
