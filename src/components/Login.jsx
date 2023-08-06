@@ -135,7 +135,7 @@ function Login() {
       ) {
         const formData = { ...signupValues, formType: "signup" };
         axios
-          .post("https://access.engr.oregonstate.edu:3378/", formData, {
+          .post("flip1.engr.oregonstate.edu:3378/", formData, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -153,7 +153,7 @@ function Login() {
       // If there are no validation errors, send the login form data to the server
       if (err.email === "" && err.password === "") {
         axios
-          .post("https://access.engr.oregonstate.edu:3378/", values, {
+          .post("flip1.engr.oregonstate.edu:3378/", values, {
             headers: {
               "Content-Type": "application/json",
             },
