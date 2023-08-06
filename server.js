@@ -6,7 +6,7 @@ It includes routes for handling form submissions and interacting with the databa
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const dbPort = 3306;
+const dbPort = 3378;
 const db = require("./SQL/db-connector");
 
 app.use(cors());
