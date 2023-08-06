@@ -25,7 +25,7 @@ const Quiz = (props) => {
         const link = props.value;
         console.log("Link : " + link);
         const response = await fetch(
-          `http://flip1.engr.oregonstate.edu:3378/select_quiz_employer_candidate/${link}`
+          `https://access.engr.oregonstate.edu:3378/select_quiz_employer_candidate/${link}`
         );
         const data = await response.json();
         console.log("Data:", data);
@@ -46,7 +46,7 @@ const Quiz = (props) => {
       try {
         if (employerId) {
           const employerResponse = await fetch(
-            `http://flip1.engr.oregonstate.edu:3378/get_employer_email/${employerId}`
+            `https://access.engr.oregonstate.edu:3378/get_employer_email/${employerId}`
           );
           const employerData = await employerResponse.json();
 
@@ -73,7 +73,7 @@ const Quiz = (props) => {
       try {
         if (candidateId) {
           const candidateResponse = await fetch(
-            `http://flip1.engr.oregonstate.edu:3378/get_candidate_name/${candidateId}`
+            `https://access.engr.oregonstate.edu:3378/get_candidate_name/${candidateId}`
           );
           const candidateData = await candidateResponse.json();
 
@@ -95,7 +95,7 @@ const Quiz = (props) => {
       try {
         if (quizId) {
           const quizResponse = await fetch(
-            `http://flip1.engr.oregonstate.edu:3378/get_quiz_title/${quizId}`
+            `https://access.engr.oregonstate.edu:3378/get_quiz_title/${quizId}`
           );
           const quizData = await quizResponse.json();
           if (quizData && quizData.title) {
@@ -138,7 +138,7 @@ const Quiz = (props) => {
         console.log("Result ID: " + resultId);
 
         const response = await fetch(
-          `http://flip1.engr.oregonstate.edu:3378/update_grade/${resultId}`,
+          `https://access.engr.oregonstate.edu:3378/update_grade/${resultId}`,
           {
             method: "PUT",
             headers: {
@@ -171,7 +171,7 @@ const Quiz = (props) => {
       try {
         if (quizId) {
           const quizResponse = await fetch(
-            `http://flip1.engr.oregonstate.edu:3378/get_quiz_time/${quizId}`
+            `https://access.engr.oregonstate.edu:3378/get_quiz_time/${quizId}`
           );
           const quizData = await quizResponse.json();
           if (quizData && quizData.time) {
@@ -194,7 +194,7 @@ const Quiz = (props) => {
     async function fetchQuizResults(quizId) {
       if (quizId) {
         const response = await fetch(
-          `http://flip1.engr.oregonstate.edu:3378/get_quiz_title/${quizId}`
+          `https://access.engr.oregonstate.edu:3378/get_quiz_title/${quizId}`
         );
         const data = await response.json();
         setQuizTitle(data.title);
@@ -204,7 +204,7 @@ const Quiz = (props) => {
     async function fetchQuestionResults(quizId) {
       if (quizId) {
         const response = await fetch(
-          `http://flip1.engr.oregonstate.edu:3378/get_quiz_questions/${quizId}`
+          `https://access.engr.oregonstate.edu:3378/get_quiz_questions/${quizId}`
         );
         const data = await response.json();
         setQuestions(data);
