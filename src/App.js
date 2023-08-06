@@ -50,7 +50,7 @@ function AppContent() {
   useEffect(() => {
     async function fetchQuizzes() {
       const response = await fetch(
-        "flip1.engr.oregonstate.edu:3378/select_links"
+        "http://flip1.engr.oregonstate.edu:3378/select_links"
       );
       const data = await response.json();
       setQuizzes(data?.map((row) => row.link));

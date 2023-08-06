@@ -35,7 +35,7 @@ const Dashboard = () => {
 
       if (employerEmail) {
         const employerResponse = await fetch(
-          `flip1.engr.oregonstate.edu:3378/get_employer_name/${employerEmail}`
+          `http://flip1.engr.oregonstate.edu:3378/get_employer_name/${employerEmail}`
         );
         const employerData = await employerResponse.json();
         if (employerData.length > 0) {

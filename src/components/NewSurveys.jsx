@@ -23,7 +23,7 @@ const NewSurveys = () => {
       const employerEmail = employerEmailData?.email?.[0];
       if (employerEmail) {
         const employerResponse = await fetch(
-          `flip1.engr.oregonstate.edu:3378/get_employer_id/${employerEmail}`
+          `http://flip1.engr.oregonstate.edu:3378/get_employer_id/${employerEmail}`
         );
 
         if (!employerResponse.ok) {
@@ -46,7 +46,7 @@ const NewSurveys = () => {
   useEffect(() => {
     const fetchQuizId = async () => {
       const quiz_id_response = await fetch(
-        `flip1.engr.oregonstate.edu:3378/get_max_quiz_id`
+        `http://flip1.engr.oregonstate.edu:3378/get_max_quiz_id`
       );
       if (!quizId) {
         setQuizId(quiz_id_response["MAX(id)"] + 1);
@@ -58,7 +58,7 @@ const NewSurveys = () => {
   useEffect(() => {
     const fetchQuizzes = async () => {
       const response = await fetch(
-        `flip1.engr.oregonstate.edu:3378/select_quizzes/${employerId}`
+        `http://flip1.engr.oregonstate.edu:3378/select_quizzes/${employerId}`
       );
       const data = await response.json();
       if (!quizzes) {
@@ -70,7 +70,7 @@ const NewSurveys = () => {
 
   const handleQuestionInput = async (e) => {
     try {
-      await fetch("flip1.engr.oregonstate.edu:3378/add_question", {
+      await fetch("http://flip1.engr.oregonstate.edu:3378/add_question", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +95,7 @@ const NewSurveys = () => {
 
   const handleQuizInput = async (e) => {
     try {
-      await fetch("flip1.engr.oregonstate.edu:3378/add_quiz", {
+      await fetch("http://flip1.engr.oregonstate.edu:3378/add_quiz", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
