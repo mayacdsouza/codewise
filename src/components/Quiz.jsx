@@ -13,17 +13,9 @@ const Quiz = (props) => {
   const [candidateId, setCandidateId] = useState(undefined);
   const [employerId, setEmployerId] = useState(undefined);
   const [resultId, setResultId] = useState(undefined);
-  const [isInitialClick, setIsInitialClick] = useState(true);
   const [questions, setQuestions] = useState();
   const [time, setTime] = useState({});
-  const [grade, setGrade] = useState(0);
-
-  const handleInitialClick = async () => {
-    if (isInitialClick) {
-      setIsInitialClick(false);
-      await handleQuizSubmit();
-    }
-  };
+  const [grade, setGrade] = useState(null);
 
   // // Get result_id, quiz_id, employer_id, candidate_id
   useEffect(() => {
@@ -131,6 +123,7 @@ const Quiz = (props) => {
     };
 
     const newGrade = calculateGrade();
+    console.log(newGrade, "new grades");
 
     try {
       if (employerEmail && candidateName && quizTitle) {
@@ -266,7 +259,7 @@ const Quiz = (props) => {
       <div className="navbar-quiz">
         <div className="navbar-container-quiz">
           <div className="navbar-logo">Codewise</div>
-          {grade ? (
+          {grade !== null ? (
             <></>
           ) : (
             <div className="quiz-clock">
@@ -280,7 +273,7 @@ const Quiz = (props) => {
       </div>
       <br></br>
       <h1 className="quiz">{quizTitle}</h1>
-      {grade ? (
+      {grade !== null ? (
         <>Quiz Submitted</>
       ) : (
         <>
@@ -306,11 +299,7 @@ const Quiz = (props) => {
             </div>
           }
           <div className="quiz-button">
-            {isInitialClick ? (
-              <button onClick={handleInitialClick}>Submit Quiz</button>
-            ) : (
-              <button onClick={handleQuizSubmit}>Confirm and Send</button>
-            )}
+            <button onClick={handleQuizSubmit}>Submit Quiz</button>
           </div>
           <br />
           <br />

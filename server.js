@@ -268,12 +268,12 @@ app.post("/add_quiz", (req, res) => {
 
 // Add new results entry to 'send to candidate' button on surveys page
 app.post("/add_result", (req, res) => {
-  const { grade, quiz_id, employer_id, candidate_id, link } = req.body;
+  const { quiz_id, employer_id, candidate_id, link } = req.body;
   const sql = `
-    INSERT INTO Results (grade, Quizzes_id, Employers_id, Candidates_id, link)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO Results (Quizzes_id, Employers_id, Candidates_id, link)
+    VALUES (?, ?, ?, ?)
   `;
-  const values = [grade, quiz_id, employer_id, candidate_id, link];
+  const values = [quiz_id, employer_id, candidate_id, link];
 
   db.query(sql, values, (err, result, fields) => {
     if (err) {
@@ -285,7 +285,6 @@ app.post("/add_result", (req, res) => {
 
     if (result) {
       res.status(200).json({
-        grade: req.body.grade,
         quiz_id: req.body.quiz_id,
         employer_id: req.body.employer_id,
         candidate_id: req.body.candidate_id,
@@ -393,7 +392,7 @@ app.put("/update_grade/:resultId", (req, res) => {
   const resultId = req.params.resultId;
   const { grade } = req.body;
 
-  if (!grade || isNaN(grade)) {
+  if (isNaN(grade)) {
     return res
       .status(400)
       .json({ error: "Invalid grade. Grade must be a number." });

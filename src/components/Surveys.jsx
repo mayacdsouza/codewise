@@ -164,7 +164,6 @@ const Surveys = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            grade: 0,
             quiz_id: selectedQuiz.id,
             employer_id: selectedQuiz.Employers_id,
             candidate_id: selectedCandidate.id,

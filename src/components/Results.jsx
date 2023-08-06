@@ -121,7 +121,7 @@ const Results = () => {
               const data = await response.json();
               // Filter out results with NULL or '0' grade
               const filteredResults = data.filter(
-                (result) => result.grade !== null && result.grade !== 0
+                (result) => result.grade !== null
               );
               setQuizResults(filteredResults);
               console.log("Selected quiz data:", filteredResults);
@@ -158,7 +158,7 @@ const Results = () => {
               const data = await response.json();
               // Filter out results with NULL or '0' grade
               const filteredResults = data.filter(
-                (result) => result.grade !== null && result.grade !== 0
+                (result) => result.grade !== null
               );
               setCandidateResults(filteredResults);
               console.log("Selected candidate data:", filteredResults);

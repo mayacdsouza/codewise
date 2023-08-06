@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/Surveys.css";
 
 export const QuizQuestion = ({
@@ -18,6 +18,12 @@ export const QuizQuestion = ({
   const [C, setC] = useState("");
   const [D, setD] = useState("");
 
+  useEffect(() => {
+    setCorrectObject((prev) => {
+      return { ...prev, [questionNumber]: A + B + C + D === answer };
+    });
+  }, [A, B, C, D, questionNumber, answer, setCorrectObject]);
+
   const handleQuestion = (e) => {
     setCorrectObject((prev) => {
       return { ...prev, [questionNumber]: e.target.value === answer };
@@ -26,33 +32,18 @@ export const QuizQuestion = ({
 
   const handleA = (e) => {
     setA(e.target.checked ? "A" : "");
-
-    setCorrectObject((prev) => {
-      return { ...prev, [questionNumber]: A + B + C + D === answer };
-    });
   };
 
   const handleB = (e) => {
     setB(e.target.checked ? "B" : "");
-
-    setCorrectObject((prev) => {
-      return { ...prev, [questionNumber]: A + B + C + D === answer };
-    });
   };
   const handleC = (e) => {
     setC(e.target.checked ? "C" : "");
-
-    setCorrectObject((prev) => {
-      return { ...prev, [questionNumber]: A + B + C + D === answer };
-    });
   };
   const handleD = (e) => {
     setD(e.target.checked ? "D" : "");
-
-    setCorrectObject((prev) => {
-      return { ...prev, [questionNumber]: A + B + C + D === answer };
-    });
   };
+
   return (
     <div>
       <h3 className="question">{question}</h3>
