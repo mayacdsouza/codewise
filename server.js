@@ -298,7 +298,7 @@ app.post("/add_result", (req, res) => {
 // Get result_id, quiz_id, employer_id, candidate_id using results keylink on quiz page
 app.get("/select_quiz_employer_candidate/:link", function (req, res) {
   const link = req.params.link;
-  const sql = `SELECT id, Quizzes_id, Employers_id, Candidates_id FROM Results WHERE link = ?`;
+  const sql = `SELECT id, Quizzes_id, Employers_id, Candidates_id, grade FROM Results WHERE link = ?`;
   db.query(sql, [link], (err, result) => {
     if (err) {
       console.error("Error fetching data:", err);

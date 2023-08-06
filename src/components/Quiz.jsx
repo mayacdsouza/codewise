@@ -41,6 +41,7 @@ const Quiz = (props) => {
         setQuizId(data[0].Quizzes_id);
         setEmployerId(data[0].Employers_id);
         setResultId(data[0].id);
+        setGrade(data[0].grade);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -129,7 +130,7 @@ const Quiz = (props) => {
       return (questionsCorrect / totalQuestions) * 100;
     };
 
-    setGrade(calculateGrade());
+    const newGrade = calculateGrade();
 
     try {
       if (employerEmail && candidateName && quizTitle) {
@@ -151,12 +152,13 @@ const Quiz = (props) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              grade: grade, // Todo: Update variable to correct grade
+              grade: newGrade, // Todo: Update variable to correct grade
             }),
           }
         );
 
         if (response.status === 200) {
+          setGrade(newGrade);
           const data = await response.json();
           console.log("Updated grade:", data);
           alert("Grade updated successfully");
@@ -264,45 +266,56 @@ const Quiz = (props) => {
       <div className="navbar-quiz">
         <div className="navbar-container-quiz">
           <div className="navbar-logo">Codewise</div>
-          <div className="quiz-clock">
-            {time.hours < 10 ? "0" : ""}
-            {time.hours}:{time.minutes < 10 ? "0" : ""}
-            {time.minutes}:{time.seconds < 10 ? "0" : ""}
-            {time.seconds}
-          </div>
+          {grade ? (
+            <></>
+          ) : (
+            <div className="quiz-clock">
+              {time.hours < 10 ? "0" : ""}
+              {time.hours}:{time.minutes < 10 ? "0" : ""}
+              {time.minutes}:{time.seconds < 10 ? "0" : ""}
+              {time.seconds}
+            </div>
+          )}
         </div>
       </div>
       <br></br>
       <h1 className="quiz">{quizTitle}</h1>
-      {
-        <div className="quiz">
-          {questions &&
-            questions.map((element, index) => (
-              <QuizQuestion
-                key={element.question}
-                questionNumber={index}
-                type={element.type}
-                question={element.question}
-                a={element.a}
-                b={element.b}
-                c={element.c}
-                d={element.d}
-                answer={element.answer}
-                correctObject={correctObject}
-                setCorrectObject={setCorrectObject}
-              />
-            ))}
-        </div>
-      }
-      <div className="quiz-button">
-        {isInitialClick ? (
-          <button onClick={handleInitialClick}>Submit Quiz</button>
-        ) : (
-          <button onClick={handleQuizSubmit}>Confirm and Send</button>
-        )}
-      </div>
-      <br />
-      <br />
+      {grade ? (
+        <>Quiz Submitted</>
+      ) : (
+        <>
+          {" "}
+          {
+            <div className="quiz">
+              {questions &&
+                questions.map((element, index) => (
+                  <QuizQuestion
+                    key={element.question}
+                    questionNumber={index}
+                    type={element.type}
+                    question={element.question}
+                    a={element.a}
+                    b={element.b}
+                    c={element.c}
+                    d={element.d}
+                    answer={element.answer}
+                    correctObject={correctObject}
+                    setCorrectObject={setCorrectObject}
+                  />
+                ))}
+            </div>
+          }
+          <div className="quiz-button">
+            {isInitialClick ? (
+              <button onClick={handleInitialClick}>Submit Quiz</button>
+            ) : (
+              <button onClick={handleQuizSubmit}>Confirm and Send</button>
+            )}
+          </div>
+          <br />
+          <br />
+        </>
+      )}
     </div>
   );
 };
