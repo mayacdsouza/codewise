@@ -21,11 +21,11 @@ const Settings = () => {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    const user = sessionStorage.getItem('loggedInUser');
+    const user = sessionStorage.getItem("loggedInUser");
     if (!user) {
       // Redirect the user to the login page if no valid user data exists
-      alert("Please log in to access your Settings.")
-      navigate('/');
+      alert("Please log in to access your Settings.");
+      navigate("/");
     }
   }, [navigate]);
 
@@ -80,7 +80,7 @@ const Settings = () => {
       return;
     }
     // Send a POST request to update the password
-    fetch("http://localhost:3306/settings", {
+    fetch("flip1.engr.oregonstate.edu:3378/settings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -119,7 +119,7 @@ const Settings = () => {
       return;
     }
     // Send a POST request to delete the account
-    fetch("http://localhost:3306/settings", {
+    fetch("flip1.engr.oregonstate.edu:3378/settings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -30,7 +30,7 @@ const Surveys = () => {
           const employerEmail = employerEmailData?.email?.[0];
           if (employerEmail) {
             const employerResponse = await fetch(
-              `http://localhost:3306/get_employer_id/${employerEmail}`
+              `flip1.engr.oregonstate.edu:3378/get_employer_id/${employerEmail}`
             );
 
             if (!employerResponse.ok) {
@@ -55,7 +55,7 @@ const Surveys = () => {
 
   const handleCandidateInput = async (e) => {
     try {
-      await fetch("http://localhost:3306/add_candidate", {
+      await fetch("flip1.engr.oregonstate.edu:3378/add_candidate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +76,9 @@ const Surveys = () => {
   useEffect(() => {
     const fetchCandidates = async () => {
       try {
-        const response = await fetch("http://localhost:3306/select_candidates");
+        const response = await fetch(
+          "flip1.engr.oregonstate.edu:3378/select_candidates"
+        );
         const data = await response.json();
         setCandidates(data);
         setOptions(
@@ -100,7 +102,7 @@ const Surveys = () => {
       if (employerId) {
         try {
           const response = await fetch(
-            `http://localhost:3306/select_quizzes/${employerId}`
+            `flip1.engr.oregonstate.edu:3378/select_quizzes/${employerId}`
           );
           const data = await response.json();
           setQuizzes(data);
@@ -158,18 +160,21 @@ const Surveys = () => {
         )}`;
 
         // Send a POST request to add new result entry
-        const response = await fetch("http://localhost:3306/add_result", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            quiz_id: selectedQuiz.id,
-            employer_id: selectedQuiz.Employers_id,
-            candidate_id: selectedCandidate.id,
-            link: keyLink,
-          }),
-        });
+        const response = await fetch(
+          "flip1.engr.oregonstate.edu:3378/add_result",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              quiz_id: selectedQuiz.id,
+              employer_id: selectedQuiz.Employers_id,
+              candidate_id: selectedCandidate.id,
+              link: keyLink,
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to add new result entry.");
