@@ -142,12 +142,11 @@ const Surveys = () => {
           return;
         }
 
-        // Todo: Link to specified quiz page ON WEBSITE HOST
         const keyLink = Math.random().toString(36).substring(7);
 
         // Prepare the email subject and body
         const subject = "Your Survey Link";
-        const body = `Dear ${selectedCandidate.name},\n\nPlease click the following link to access your survey: http://localhost:3000/quiz/${keyLink}\n\nBest regards,\nCodewise`;
+        const body = `Dear ${selectedCandidate.name},\n\nPlease click the following link to access your survey: http://flip1.engr.oregonstate.edu:9367/quiz/${keyLink}\n\nBest regards,\nCodewise`;
 
         console.log("Candidate name: " + selectedCandidate.name);
         console.log("Candidate email: " + selectedCandidate.email);
