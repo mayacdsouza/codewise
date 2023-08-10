@@ -138,7 +138,7 @@ const Results = () => {
     }
   }, [selectedQuiz]);
 
-  // Fetch candidate results based on the selected candidate
+  // Fetch candidate results based on selected candidate
   useEffect(() => {
     if (selectedCandidate) {
       async function fetchCandidateId() {
